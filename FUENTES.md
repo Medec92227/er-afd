@@ -8,6 +8,3 @@
 
 ## Herramientas de apoyo
 
-Usamos Codex como asistente durante el desarrollo. Todo el código entregado lo revisamos,
-lo probamos y lo podemos explicar. No se usaron librerías de expresiones regulares ni se
-copió código de otros proyectos.
