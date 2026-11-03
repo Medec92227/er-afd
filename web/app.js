@@ -20,8 +20,8 @@ async function iniciar() {
     pyodide.runPython(await (await fetch("puente.py")).text());
     analizar = pyodide.globals.get("analizar");
     $("estado-carga").classList.add("oculto");
-    $("convertir").disabled = false;
-    $("convertir").textContent = "Convertir";
+    $("convertir-btn").disabled = false;
+    $("convertir-btn").textContent = "Convertir";
     leerUrl();
     convertir();
   } catch (error) {
@@ -88,9 +88,10 @@ function resumen(automata, alfabeto) {
 
 function dibujar(id, dot) {
   const svg = viz.renderSVGElement(dot, {
-    graphAttributes: { bgcolor: "transparent", fontname: "Helvetica" },
-    nodeAttributes: { fontname: "Helvetica", fontsize: 13 },
-    edgeAttributes: { fontname: "Helvetica", fontsize: 12 },
+    graphAttributes: { bgcolor: "transparent", fontname: "Montserrat", fontcolor: "#eef2f6" },
+    nodeAttributes: { fontname: "Montserrat", fontsize: 13, color: "#dfe7ef", fontcolor: "#eef2f6",
+                      style: "filled", fillcolor: "#10263a", penwidth: 1.4 },
+    edgeAttributes: { fontname: "JetBrains Mono", fontsize: 12, color: "#7f97ad", fontcolor: "#c9d6e2" },
   });
   $(id).replaceChildren(svg);
 }
@@ -174,7 +175,9 @@ function irA(nuevo) {
     li.className = "final " + (datos.aceptada ? "acepta" : "rechaza");
     lista.append(li);
   }
-  lista.querySelector(".actual, .final")?.scrollIntoView({ block: "nearest" });
+  // Solo se desplaza la lista de pasos, no la página.
+  const marcado = lista.querySelector(".actual, .final");
+  if (marcado) lista.scrollTop = marcado.offsetTop - lista.offsetTop - lista.clientHeight / 2;
 
   resaltar(actual, paso > 0 ? datos.recorrido[paso - 1] : null);
   document.querySelectorAll("#matriz tr").forEach((f) => f.classList.toggle("activo", f.dataset.estado === actual));
@@ -217,15 +220,29 @@ $("epsilon").addEventListener("click", () => {
   campo.setRangeText("ε", pos, campo.selectionEnd ?? pos, "end");
   campo.focus();
 });
-document.querySelectorAll(".ejemplos button").forEach((b) => b.addEventListener("click", () => {
+document.querySelectorAll(".tarjeta-ejemplo").forEach((b) => b.addEventListener("click", () => {
   $("er").value = b.dataset.er;
   $("cadena").value = b.dataset.cadena;
   convertir();
+  $("convertir").scrollIntoView({ behavior: "smooth" });
 }));
-$("inicio").addEventListener("click", () => { detener(); irA(0); });
+$("inicio-btn").addEventListener("click", () => { detener(); irA(0); });
 $("atras").addEventListener("click", () => { detener(); irA(paso - 1); });
 $("adelante").addEventListener("click", () => { detener(); irA(paso + 1); });
 $("fin").addEventListener("click", () => { detener(); irA(datos.recorrido.length); });
 $("reproducir").addEventListener("click", reproducir);
+
+// Animación de aparición y pestaña activa según la sección visible.
+const aparicion = new IntersectionObserver((entradas) => {
+  for (const e of entradas) if (e.isIntersecting) { e.target.classList.add("visible"); aparicion.unobserve(e.target); }
+}, { threshold: 0.12 });
+document.querySelectorAll(".aparecer").forEach((el) => aparicion.observe(el));
+const pestanas = new IntersectionObserver((entradas) => {
+  for (const e of entradas) {
+    if (!e.isIntersecting) continue;
+    document.querySelectorAll(".pildoras a").forEach((a) => a.classList.toggle("activa", a.hash === "#" + e.target.id));
+  }
+}, { rootMargin: "-45% 0px -50% 0px" });
+document.querySelectorAll("main > section").forEach((s) => pestanas.observe(s));
 
 iniciar();
