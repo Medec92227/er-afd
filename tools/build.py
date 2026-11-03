@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pasos del Makefile: config, build, run y clean. Solo usa la biblioteca estándar."""
+"""Pasos del Makefile: config, build, run, web y clean. Solo usa la biblioteca estándar."""
 from __future__ import annotations
 
 import os
@@ -62,6 +62,17 @@ def run() -> int:
     return code
 
 
+def web() -> int:
+    """Arma dist/web: la página de web/ más el paquete er_afd que ejecuta Pyodide."""
+    target = DIST / "web"
+    shutil.rmtree(target, ignore_errors=True)
+    shutil.copytree(ROOT / "web", target)
+    shutil.copytree(PACKAGE, target / "er_afd", ignore=shutil.ignore_patterns("__pycache__"))
+    print("Página lista en dist/web")
+    print("Para verla: python3 -m http.server 8000 -d dist/web  y abrir http://localhost:8000")
+    return 0
+
+
 def clean() -> int:
     shutil.rmtree(BUILD, ignore_errors=True)
     shutil.rmtree(DIST, ignore_errors=True)
@@ -72,9 +83,9 @@ def clean() -> int:
 
 
 def main() -> int:
-    commands = {"config": config, "build": build, "run": run, "clean": clean}
+    commands = {"config": config, "build": build, "run": run, "web": web, "clean": clean}
     if len(sys.argv) != 2 or sys.argv[1] not in commands:
-        print("Uso: python3 tools/build.py {config|build|run|clean}", file=sys.stderr)
+        print("Uso: python3 tools/build.py {config|build|run|web|clean}", file=sys.stderr)
         return 2
     return commands[sys.argv[1]]()
 

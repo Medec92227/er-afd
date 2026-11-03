@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ER-AFD · Convertidor de ER a AFD</title>
+  <meta name="description" content="Convierte una expresión regular en AFND (Thompson) y AFD (subconjuntos) y recorre una cadena paso a paso.">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor barra-interior">
+    <div>
+      <h1>ER-AFD</h1>
+      <p>Expresión regular → AFND (Thompson) → AFD (subconjuntos)</p>
+    </div>
+    <nav>
+      <a href="https://github.com/Medec92227/er-afd" target="_blank" rel="noopener">Código</a>
+      <a href="https://github.com/Medec92227/er-afd/blob/main/doc/Reporte_tecnico.pdf" target="_blank" rel="noopener">Reporte técnico</a>
+      <a href="#ayuda">Sintaxis</a>
+    </nav>
+  </div>
+</header>
+
+<main class="contenedor">
+  <section class="tarjeta entrada">
+    <form id="formulario" autocomplete="off">
+      <div class="campos">
+        <label>Expresión regular
+          <div class="con-boton">
+            <input id="er" spellcheck="false" value="(a|b)*abb">
+            <button type="button" id="epsilon" title="Insertar ε">ε</button>
+          </div>
+        </label>
+        <label>Cadena
+          <input id="cadena" spellcheck="false" value="aabb">
+        </label>
+        <button type="submit" id="convertir" class="principal" disabled>Cargando…</button>
+      </div>
+      <div class="ejemplos">
+        <span>Ejemplos:</span>
+        <button type="button" data-er="(a|b)*abb" data-cadena="aabb">(a|b)*abb</button>
+        <button type="button" data-er="ab*" data-cadena="abb">ab*</button>
+        <button type="button" data-er="ab*" data-cadena="aba">ab* rechazada</button>
+        <button type="button" data-er="\A\a*" data-cadena="Guatemala">\A\a*</button>
+        <button type="button" data-er="\N\N*(\.\N\N*|ε)" data-cadena="3.14">números</button>
+        <button type="button" data-er="a|." data-cadena="x">a|.</button>
+        <button type="button" data-er="hola\ mundo" data-cadena="hola mundo">espacio</button>
+      </div>
+    </form>
+    <p id="estado-carga" class="nota">Cargando Python en el navegador (la primera vez tarda unos segundos)…</p>
+  </section>
+
+  <section id="resultado" class="resultado oculto" aria-live="polite">
+    <div id="veredicto" class="veredicto"></div>
+
+    <div class="rejilla">
+      <article class="tarjeta">
+        <div class="titulo-tarjeta">
+          <h2>AFD</h2>
+          <span id="resumen-afd" class="resumen"></span>
+        </div>
+        <div id="grafo-afd" class="grafo"></div>
+      </article>
+
+      <article class="tarjeta">
+        <div class="titulo-tarjeta">
+          <h2>Recorrido</h2>
+          <div class="controles">
+            <button type="button" id="inicio" title="Inicio">⏮</button>
+            <button type="button" id="atras" title="Paso anterior">◀</button>
+            <button type="button" id="reproducir" title="Reproducir">▶ Reproducir</button>
+            <button type="button" id="adelante" title="Paso siguiente">▶</button>
+            <button type="button" id="fin" title="Final">⏭</button>
+          </div>
+        </div>
+        <div id="cinta" class="cinta"></div>
+        <ol id="pasos" class="pasos"></ol>
+      </article>
+    </div>
+
+    <article class="tarjeta">
+      <div class="titulo-tarjeta">
+        <h2>Matriz de transiciones del AFD</h2>
+        <span class="resumen">→ estado inicial · * estado de aceptación</span>
+      </div>
+      <div class="desplazable"><table id="matriz"></table></div>
+      <h3>Subconjuntos del AFND</h3>
+      <div class="desplazable"><table id="subconjuntos"></table></div>
+    </article>
+
+    <article class="tarjeta">
+      <div class="titulo-tarjeta">
+        <h2>AFND (Thompson)</h2>
+        <span id="resumen-afnd" class="resumen"></span>
+      </div>
+      <div id="grafo-afnd" class="grafo ancho"></div>
+    </article>
+
+    <article class="tarjeta">
+      <div class="titulo-tarjeta">
+        <h2>Salida de consola</h2>
+        <span class="resumen">igual a <code>er-afd</code> en la terminal</span>
+      </div>
+      <pre id="consola" class="consola"></pre>
+    </article>
+  </section>
+
+  <section id="ayuda" class="tarjeta">
+    <h2>Sintaxis</h2>
+    <table class="sintaxis">
+      <tr><td><code>ab</code></td><td>Concatenación</td><td><code>.</code></td><td>Cualquier carácter ASCII</td></tr>
+      <tr><td><code>a|b</code></td><td>Unión</td><td><code>ε</code></td><td>Cadena vacía</td></tr>
+      <tr><td><code>a*</code></td><td>Cerradura de Kleene</td><td><code>[abc] [a-z] [^abc]</code></td><td>Conjunto, rango y negación</td></tr>
+      <tr><td><code>(r)</code></td><td>Agrupación</td><td><code>\*  \\  \p</code></td><td>Carácter literal</td></tr>
+      <tr><td><code>\N</code></td><td>Dígito [0-9]</td><td><code>\A \a \z</code></td><td>Mayúscula, minúscula, letra</td></tr>
+      <tr><td><code>\hXX</code></td><td>Carácter por código hex (<code>\h20</code> = espacio)</td><td></td><td></td></tr>
+    </table>
+    <p class="nota">El código que convierte y evalúa es el mismo paquete Python del programa de consola, ejecutado en el navegador con Pyodide. No se usan librerías de expresiones regulares.</p>
+  </section>
+</main>
+
+<footer class="contenedor pie">
+  Universidad Mariano Gálvez de Guatemala · Proyecto del curso · Carlos Abraham Méndez Asencio y Maycol Alexander Ortiz Flores
+</footer>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.5/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3.30.0/dist/viz-global.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

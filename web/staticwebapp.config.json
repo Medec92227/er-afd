@@ -1,0 +1,4 @@
+{
+  "mimeTypes": { ".py": "text/plain; charset=utf-8" },
+  "globalHeaders": { "X-Content-Type-Options": "nosniff" }
+}

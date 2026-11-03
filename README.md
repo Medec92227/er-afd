@@ -48,6 +48,7 @@ make build
 | `make run` | Ejecuta el ejemplo `(a\|b)*abb` con `aabb`. Acepta `ER=` y `CADENA=`. |
 | `make test` | Corre las pruebas unitarias. |
 | `make metricas` | Calcula las métricas de precisión y las guarda en `doc/metricas.json`. |
+| `make web` | Arma la página web en `dist/web`. |
 | `make clean` | Borra `build/`, `dist/` y las cachés de Python. |
 
 ## Uso
@@ -109,6 +110,19 @@ Tokenizar un archivo con varias reglas:
 ```bash
 er-lex --rules examples/reglas.json --file examples/programa.txt
 ```
+
+## Página web
+
+La carpeta `web/` tiene una versión en el navegador. Usa el mismo paquete `er_afd`, que se ejecuta
+con [Pyodide](https://pyodide.org), y además dibuja el AFND y el AFD y anima el recorrido paso a paso.
+
+```bash
+make web
+python3 -m http.server 8000 -d dist/web   # abrir http://localhost:8000
+```
+
+Se publica en Azure Static Web Apps con el workflow `.github/workflows/web.yml` cuando el repositorio
+tiene el secreto `AZURE_STATIC_WEB_APPS_API_TOKEN`.
 
 ## Sintaxis
 
