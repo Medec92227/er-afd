@@ -1,4 +1,4 @@
-"""Máxima longitud, prioridad, posiciones y errores de tokenización."""
+"""Pruebas del tokenizador er-lex."""
 
 import json
 import os
@@ -91,11 +91,15 @@ class LexerTests(unittest.TestCase):
             rules_path.write_text(json.dumps(BASE_RULES), encoding="utf-8")
             env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
             command = [sys.executable, "-m", "er_afd.lexer", "--rules", str(rules_path), "--text"]
-            good = subprocess.run(command + ["if x=42"], cwd=ROOT, env=env, capture_output=True,
+            good = subprocess.run(command + ["if x=42", "--json"], cwd=ROOT, env=env, capture_output=True,
                                   text=True, encoding="utf-8", timeout=30)
             self.assertEqual(good.returncode, 0, good.stderr)
             tokens = json.loads(good.stdout)
             self.assertEqual([token["type"] for token in tokens], ["IF", "ID", "EQ", "INT"])
+            table = subprocess.run(command + ["if x=42"], cwd=ROOT, env=env, capture_output=True,
+                                   text=True, encoding="utf-8", timeout=30)
+            self.assertEqual(table.returncode, 0, table.stderr)
+            self.assertEqual(table.stdout.splitlines()[1].split()[:2], ["1:1", "IF"])
             bad = subprocess.run(command + ["!"], cwd=ROOT, env=env, capture_output=True,
                                  text=True, encoding="utf-8", timeout=30)
             self.assertEqual(bad.returncode, 2)

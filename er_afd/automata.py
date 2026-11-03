@@ -1,8 +1,9 @@
-"""Construcción explícita de Thompson, subconjuntos y simulación tabular."""
+"""Construcción de Thompson, construcción de subconjuntos y simulación del AFD."""
 from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
+import json
 
 from .parser import (ASCII, EPSILON, Node, ParsedRegex, ResourceLimitError,
                      display_char, parse_regex)
@@ -68,16 +69,17 @@ class DFA:
     transitions: dict[tuple[int, str], int]
     subsets: tuple[frozenset[int], ...]
     char_classes: dict[str, str]
-    dead_state: int | None
 
     @property
     def state_count(self) -> int:
         return len(self.subsets)
 
-    def step(self, state: int, char: str) -> int:
+    def step(self, state: int, char: str) -> int | None:
+        """Destino en la matriz; None si no hay transición (la cadena se rechaza)."""
         if len(char) != 1 or char not in ASCII:
             raise ValueError("La transición requiere un carácter ASCII.")
-        return self.transitions[(state, self.char_classes[char])]
+        label = self.char_classes.get(char)
+        return self.transitions.get((state, label)) if label else None
 
     def match(self, text: str) -> MatchResult:
         validate_ascii(text)
@@ -85,16 +87,14 @@ class DFA:
         trace = []
         for char in text:
             target = self.step(state, char)
+            if target is None:
+                return MatchResult(False, tuple(trace), state)
             trace.append(Step(state, char, target))
             state = target
         return MatchResult(state in self.finals, tuple(trace), state)
 
     def accepts(self, text: str) -> bool:
-        validate_ascii(text)
-        state = self.start
-        for char in text:
-            state = self.step(state, char)
-        return state in self.finals
+        return self.match(text).accepted
 
 
 def validate_ascii(text: str) -> None:
@@ -106,7 +106,7 @@ def validate_ascii(text: str) -> None:
 
 
 def thompson(parsed: ParsedRegex) -> NFA:
-    """Compila el AST por postorden, sin recursión sobre concatenaciones largas."""
+    """Recorre el AST en postorden con una pila para no depender de la recursión."""
     next_state = 0
     edges: dict[tuple[int, str], set[int]] = {}
 
@@ -159,7 +159,7 @@ def thompson(parsed: ParsedRegex) -> NFA:
                 raise AssertionError(f"Tipo de nodo desconocido: {node.kind}")
         fragments.append((start, end))
     initial, final = fragments[0]
-    # Thompson creates union/star wrappers last; renumber to guarantee q0.
+    # La unión y la cerradura crean su estado inicial al final; se renumera para que sea q0.
     old_order = [initial] + [s for s in range(next_state) if s != initial]
     mapping = {old: new for new, old in enumerate(old_order)}
     renamed = {(mapping[s], label): frozenset(mapping[t] for t in targets)
@@ -173,36 +173,38 @@ def thompson(parsed: ParsedRegex) -> NFA:
 
 
 def _partitions(nfa: NFA) -> tuple[dict[str, frozenset[str]], dict[str, str]]:
-    """Agrupa caracteres con idéntica pertenencia a las etiquetas del AFND.
+    """Agrupa los caracteres ASCII según las etiquetas del AFND que los aceptan.
 
-    Evita la falsa determinación de una tabla con columnas solapadas a y . .
-    Incluye la clase residual para tener una función total sobre ASCII.
+    En a|. el carácter a activa la etiqueta a y también el punto; si el AFD
+    usara las etiquetas tal cual, tendría dos columnas para el mismo carácter.
+    Cada grupo es disjunto y se nombra con el símbolo de Σ que le corresponde.
+    Solo cuando dos conjuntos como . y [^a] se solapan aparece una clase Ci.
+    Los caracteres que ninguna etiqueta acepta no tienen columna.
     """
     labels = tuple(label for label in nfa.alphabet if label != EPSILON)
     groups: dict[tuple[str, ...], list[str]] = {}
     order = []
-    # Preserve the first appearance of concrete source symbols, then residual.
+    # Primero los caracteres en el orden de Σ y después el resto de ASCII.
     for label in labels:
         order.extend(sorted(nfa.symbol_sets[label], key=ord))
     order.extend(chr(i) for i in range(128))
     for char in dict.fromkeys(order):
         signature = tuple(label for label in labels if char in nfa.symbol_sets[label])
-        groups.setdefault(signature, []).append(char)
+        if signature:
+            groups.setdefault(signature, []).append(char)
     symbol_sets: dict[str, frozenset[str]] = {}
     char_classes = {}
     for i, (signature, chars) in enumerate(groups.items()):
-        group = frozenset(chars)
-        if len(group) == 1:
-            label = display_char(chars[0])
-        elif len(signature) == 1 and group == nfa.symbol_sets[signature[0]]:
+        if len(signature) == 1:
             label = signature[0]
+        elif len(chars) == 1 and display_char(chars[0]) in labels:
+            label = display_char(chars[0])
         else:
             label = f"C{i}"
-        # Source literal C0 is displayed one character at a time, no collision.
         if label in symbol_sets:
             label = f"C{i}"
-        symbol_sets[label] = group
-        char_classes.update((char, label) for char in group)
+        symbol_sets[label] = frozenset(chars)
+        char_classes.update((char, label) for char in chars)
     return symbol_sets, char_classes
 
 
@@ -216,7 +218,7 @@ def determinize(nfa: NFA, max_states: int = 4096) -> DFA:
     pending = deque((start_subset,))
     transitions: dict[tuple[int, str], int] = {}
     finals: set[int] = set()
-    # Cache each individual state's consuming move per partition.
+    # mover(q, c) de cada estado del AFND se calcula una sola vez por clase.
     moves: dict[tuple[int, str], frozenset[int]] = {}
     outgoing: dict[int, list[tuple[frozenset[str], frozenset[int]]]] = {}
     for (source, label), targets in nfa.transitions.items():
@@ -239,6 +241,9 @@ def determinize(nfa: NFA, max_states: int = 4096) -> DFA:
             targets: set[int] = set()
             for state in subset:
                 targets.update(moves[(state, label)])
+            # Sin destinos no hay transición: no se agrega un estado pozo.
+            if not targets:
+                continue
             target_subset = nfa.epsilon_closure(frozenset(targets))
             if target_subset not in indices:
                 if len(subsets) >= max_states:
@@ -249,8 +254,7 @@ def determinize(nfa: NFA, max_states: int = 4096) -> DFA:
             transitions[(source, label)] = indices[target_subset]
     return DFA(0, frozenset(finals), tuple(symbols),
                tuple(label for label in nfa.alphabet if label != EPSILON),
-               symbols, transitions, tuple(subsets), char_classes,
-               indices.get(frozenset()))
+               symbols, transitions, tuple(subsets), char_classes)
 
 
 def _set(states, prefix: str) -> str:
@@ -258,7 +262,7 @@ def _set(states, prefix: str) -> str:
 
 
 def _char_set(chars: frozenset[str]) -> str:
-    """Compact ranges for legends; range bounds use escaped display labels."""
+    """Escribe el conjunto con rangos compactos, por ejemplo {a..z}."""
     codes = sorted(ord(c) for c in chars)
     if not codes:
         return "{}"
@@ -275,9 +279,9 @@ def _char_set(chars: frozenset[str]) -> str:
     return "{" + ",".join(runs) + "}"
 
 
-def format_automata(nfa: NFA, dfa: DFA) -> str:
+def format_automata(nfa: NFA, dfa: DFA, verbose: bool = False) -> str:
     lines = ["AFND", "Q=" + _set(range(nfa.state_count), "q"),
-             "Σ={" + ",".join(nfa.alphabet) + "}", "Inicial=q0",
+             "Σ={" + ",".join(nfa.alphabet) + "}",
              "F=" + _set(nfa.finals, "q")]
     for state in range(nfa.state_count):
         for label in nfa.alphabet:
@@ -286,17 +290,19 @@ def format_automata(nfa: NFA, dfa: DFA) -> str:
                 lines.append(f"q{state}|{label}|" + _set(targets, "q"))
     lines += ["", "AFD", "Q=" + _set(range(dfa.state_count), "Q"),
               "Σ={" + ",".join(dfa.source_alphabet) + "}",
-              "Γ={" + ",".join(dfa.alphabet) + "}",
-              "Inicial=Q0", "F=" + _set(dfa.finals, "Q"),
-              "Γ: particiones disjuntas de ASCII; incluyen la clase residual."]
+              "F=" + _set(dfa.finals, "Q")]
+    # Las clases Ci (conjuntos solapados) siempre se explican; el resto solo con --verbose.
     for label, chars in dfa.symbol_sets.items():
-        lines.append(label + "=" + _char_set(chars))
-    lines.append("Subconjuntos del AFND:")
-    for state, subset in enumerate(dfa.subsets):
-        lines.append(f"Q{state}=" + _set(subset, "q"))
+        if verbose or label not in dfa.source_alphabet:
+            lines.append(label + "=" + _char_set(chars))
+    if verbose:
+        for state, subset in enumerate(dfa.subsets):
+            lines.append(f"Q{state}=" + _set(subset, "q"))
     for state in range(dfa.state_count):
         for label in dfa.alphabet:
-            lines.append(f"Q{state}|{label}|Q{dfa.transitions[(state, label)]}")
+            target = dfa.transitions.get((state, label))
+            if target is not None:
+                lines.append(f"Q{state}|{label}|Q{target}")
     return "\n".join(lines)
 
 
@@ -312,8 +318,8 @@ class CompiledRegex:
     def accepts(self, text: str) -> bool:
         return self.dfa.accepts(text)
 
-    def format_tables(self) -> str:
-        return format_automata(self.nfa, self.dfa)
+    def format_tables(self, verbose: bool = False) -> str:
+        return format_automata(self.nfa, self.dfa, verbose)
 
     def to_dict(self) -> dict:
         return {
@@ -332,7 +338,6 @@ class CompiledRegex:
                 "source_alphabet": list(self.dfa.source_alphabet),
                 "alphabet": list(self.dfa.alphabet), "initial": "Q0",
                 "finals": [f"Q{i}" for i in sorted(self.dfa.finals)],
-                "dead_state": None if self.dfa.dead_state is None else f"Q{self.dfa.dead_state}",
                 "partitions": {label: sorted(chars, key=ord) for label, chars in self.dfa.symbol_sets.items()},
                 "subsets": {f"Q{i}": [f"q{q}" for q in sorted(subset)]
                             for i, subset in enumerate(self.dfa.subsets)},
@@ -340,7 +345,6 @@ class CompiledRegex:
                                 for (s, label), target in sorted(self.dfa.transitions.items())]}}
 
     def to_dot(self, kind: str = "dfa") -> str:
-        import json
         if kind not in ("nfa", "dfa"):
             raise ValueError("kind debe ser 'nfa' o 'dfa'.")
         machine = self.nfa if kind == "nfa" else self.dfa
@@ -357,10 +361,6 @@ class CompiledRegex:
         for (source, target), labels in sorted(grouped.items()):
             label = json.dumps(", ".join(labels), ensure_ascii=False)
             lines.append(f"  {prefix}{source} -> {prefix}{target} [label={label}];")
-        if kind == "dfa":
-            legend = "\n".join(label + "=" + _char_set(chars)
-                                  for label, chars in self.dfa.symbol_sets.items())
-            lines.append("  legend [shape=box,label=" + json.dumps(legend, ensure_ascii=False) + "];")
         lines.append("}")
         return "\n".join(lines) + "\n"
 

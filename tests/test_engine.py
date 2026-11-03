@@ -1,4 +1,4 @@
-"""Lenguajes conocidos, invariantes y equivalencia independiente AFND/AFD."""
+"""Pruebas del parser, de Thompson y de la construcción de subconjuntos."""
 
 import ast
 from functools import lru_cache
@@ -21,7 +21,7 @@ def compiled(pattern):
 
 
 def nfa_accepts(nfa, text):
-    """Simulador de prueba independiente: no llama métodos del producto."""
+    """Simula el AFND directamente, sin usar los métodos del proyecto."""
     def closure(states):
         found = set(states)
         pending = list(states)
@@ -128,14 +128,20 @@ class AutomatonInvariantTests(unittest.TestCase):
                     self.assertTrue(all(ord(char) < 128 for char in members))
                     seen.update(members)
 
-    def test_dfa_transition_matrix_is_complete_for_its_alphabet(self):
+    def test_dfa_has_no_dead_state(self):
+        # Como en el ejemplo del enunciado, las transiciones vacías se omiten.
         for pattern in DIFFERENTIAL_PATTERNS:
             with self.subTest(pattern=pattern):
                 dfa = compiled(pattern).dfa
-                self.assertEqual(len(dfa.transitions), dfa.state_count * len(dfa.alphabet))
-                for state in range(dfa.state_count):
-                    for label in dfa.alphabet:
-                        self.assertIn((state, label), dfa.transitions)
+                self.assertNotIn(frozenset(), dfa.subsets)
+                for (state, label), target in dfa.transitions.items():
+                    self.assertLess(state, dfa.state_count)
+                    self.assertIn(label, dfa.alphabet)
+
+    def test_missing_transition_rejects_and_stops_trace(self):
+        result = compiled("ab").match("acb")
+        self.assertFalse(result.accepted)
+        self.assertEqual([(s.source, s.symbol) for s in result.trace], [(0, "a")])
 
     def test_subset_acceptance_matches_nfa_final_membership(self):
         for pattern in DIFFERENTIAL_PATTERNS:

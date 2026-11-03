@@ -22,11 +22,11 @@ class RegexSyntaxError(ValueError):
 
 
 class ResourceLimitError(ValueError):
-    """Límite preventivo de memoria o complejidad superado."""
+    """La ER o el autómata superan el tamaño máximo permitido."""
 
 
 def display_char(char: str) -> str:
-    """Representación inequívoca y de una sola línea para tablas y trazas."""
+    """Cómo se muestra un carácter en las tablas (espacios y controles en hexadecimal)."""
     if char == " ":
         return r"\h20"
     if ord(char) < 32 or ord(char) == 127:
@@ -40,7 +40,7 @@ def display_char(char: str) -> str:
 class Node:
     kind: str
     children: tuple["Node", ...] = ()
-    # Each entry is a display label and its set of actual ASCII characters.
+    # Cada símbolo es (etiqueta que se muestra, caracteres ASCII que representa).
     symbols: tuple[tuple[str, frozenset[str]], ...] = ()
 
 
@@ -188,7 +188,7 @@ class Parser:
         while self.peek() and self.peek() != "]":
             unit_start = self.pos
             left = self.class_unit()
-            # A hyphen is literal at the first or final position.
+            # El guion es literal si va al inicio o al final del conjunto.
             if self.peek() == "-" and self.pos + 1 < len(self.pattern) and self.pattern[self.pos + 1] != "]":
                 self.pos += 1
                 right = self.class_unit()

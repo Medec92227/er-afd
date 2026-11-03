@@ -83,7 +83,7 @@ def tokenize(rules: tuple[Rule, ...], text: str) -> list[Token]:
             for index, state in active:
                 dfa = rules[index].automaton.dfa
                 target = dfa.step(state, text[cursor])
-                if target is None or target == dfa.dead_state:
+                if target is None:
                     continue
                 following.append((index, target))
                 if target in dfa.finals:
@@ -118,13 +118,21 @@ def main(argv: list[str] | None = None) -> int:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--file", type=Path, help="Archivo ASCII; conserva saltos de línea")
     source.add_argument("--text", help="Texto ASCII entre comillas")
+    parser.add_argument("--json", action="store_true", help="Emitir los tokens como JSON")
     args = parser.parse_args(argv)
     try:
         spec = json.loads(args.rules.read_text(encoding="utf-8-sig"))
         rules = compile_rules(spec)
         text = args.file.read_bytes().decode("ascii") if args.file else args.text
         result = tokenize(rules, text)
-        print(json.dumps([asdict(token) for token in result], ensure_ascii=True, indent=2))
+        if args.json:
+            print(json.dumps([asdict(token) for token in result], ensure_ascii=True, indent=2))
+        else:
+            width = max((len(token.type) for token in result), default=4)
+            print(f"{'POS':<7} {'TIPO':<{width}}  VALOR")
+            for token in result:
+                position = f"{token.line}:{token.column}"
+                print(f"{position:<7} {token.type:<{width}}  {token.value!r}")
         return 0
     except (OSError, ValueError, RegexSyntaxError, ResourceLimitError) as exc:
         print(f"Error: {exc}", file=sys.stderr)

@@ -1,4 +1,4 @@
-"""Oráculos de lenguaje escritos a mano; no usan motores de regex."""
+"""Casos de prueba con el resultado esperado escrito a mano."""
 
 from dataclasses import dataclass
 

@@ -1,4 +1,4 @@
-"""ER-AFD: autómatas explícitos, sin biblioteca de expresiones regulares."""
+"""ER-AFD: convertidor de expresiones regulares a AFND y AFD."""
 from .automata import (CompiledRegex, DFA, NFA, MatchResult, Step,
                        compile_regex, determinize, format_automata, thompson)
 from .parser import RegexSyntaxError, ResourceLimitError, parse_regex

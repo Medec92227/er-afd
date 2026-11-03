@@ -10,14 +10,14 @@ from .automata import compile_regex
 from .parser import display_char
 
 
+def trace_char(char: str) -> str:
+    """En el recorrido se muestra el carácter leído; solo se escapan los que confunden la línea."""
+    if char in "|\\" or ord(char) <= 32 or ord(char) == 127:
+        return display_char(char)
+    return char
+
+
 def main(argv: list[str] | None = None) -> int:
-    # Windows may select cp1252 for redirected output, which cannot encode
-    # epsilon or Sigma. Keep the CLI's Unicode tables usable there as UTF-8.
-    if sys.platform == "win32":
-        for stream in (sys.stdout, sys.stderr):
-            reconfigure = getattr(stream, "reconfigure", None)
-            if reconfigure is not None:
-                reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(
         prog="er-afd", description="ER -> AFND (Thompson) -> AFD (subconjuntos).",
         epilog="Retorno: 1 = aceptada, 0 = rechazada, 2 = error. Universo: ASCII 00..7F.")
@@ -26,6 +26,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--file", type=Path, metavar="RUTA", help="Leer la cadena completa de un archivo ASCII.")
     parser.add_argument("--json", action="store_true", help="Emitir autómatas y resultado como JSON.")
     parser.add_argument("--dot", type=Path, metavar="PREFIJO", help="Exportar PREFIJO.afnd.dot y PREFIJO.afd.dot.")
+    parser.add_argument("--verbose", action="store_true", help="Mostrar también subconjuntos y clases del AFD.")
     parser.add_argument("--max-states", type=int, default=4096, metavar="N", help="Máximo de estados AFD (4096).")
     args = parser.parse_args(argv)
     if args.file is None and args.text is None:
@@ -51,12 +52,10 @@ def main(argv: list[str] | None = None) -> int:
             data["final_state"] = f"Q{result.final_state}"
             print(json.dumps(data, ensure_ascii=True, indent=2))
         else:
-            print(compiled.format_tables())
-            print("\nRecorrido")
+            print(compiled.format_tables(args.verbose))
+            print()
             for step in result.trace:
-                print(f"Q{step.source}|{display_char(step.symbol)}|Q{step.target}")
-            if not result.trace:
-                print("Q0 (cadena vacía; no se consume ningún símbolo)")
+                print(f"Q{step.source}|{trace_char(step.symbol)}|Q{step.target}")
             print("Cadena aceptada" if result.accepted else "Cadena rechazada")
         return int(result.accepted)
     except (ValueError, OSError) as error:

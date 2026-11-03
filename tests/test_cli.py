@@ -1,4 +1,4 @@
-"""Verificación del contrato público de línea de comando."""
+"""Pruebas de la línea de comando er-afd."""
 
 import json
 import os
@@ -27,6 +27,38 @@ class CLITests(unittest.TestCase):
         self.assertEqual(result.stdout.rstrip().splitlines()[-1], "Cadena aceptada")
         self.assertIn("AFND", result.stdout)
         self.assertIn("AFD", result.stdout)
+
+    def test_output_follows_the_project_format(self):
+        result = run_cli("ab*", "abb")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        expected = """AFND
+Q={q0,q1,q2,q3,q4,q5}
+Σ={a,b,ε}
+F={q5}
+q0|a|{q1}
+q1|ε|{q4}
+q2|b|{q3}
+q3|ε|{q2,q5}
+q4|ε|{q2,q5}
+
+AFD
+Q={Q0,Q1,Q2}
+Σ={a,b}
+F={Q1,Q2}
+Q0|a|Q1
+Q1|b|Q2
+Q2|b|Q2
+
+Q0|a|Q1
+Q1|b|Q2
+Q2|b|Q2
+Cadena aceptada
+"""
+        self.assertEqual(result.stdout, expected)
+
+    def test_verbose_adds_subsets(self):
+        result = run_cli("ab*", "abb", "--verbose")
+        self.assertIn("Q1={q1,q2,q4,q5}", result.stdout)
 
     def test_rejected_returns_zero_and_exact_final_message(self):
         result = run_cli("ab", "aa")
