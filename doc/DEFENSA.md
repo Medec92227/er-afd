@@ -118,7 +118,7 @@ Frase de alcance: «Obtuvimos 100% en esta muestra finita. Esto no demuestra aus
 
 **¿Qué significa ASCII en el programa?** El universo consta de los 128 códigos 0 a 127. El comodín y el complemento incluyen controles. La letra `ε` es notación de la ER, no un carácter de entrada ASCII.
 
-**¿Se usó una librería de regex?** No para el parser, Thompson, subconjuntos, simulación ni tokenización. Las estructuras son de la biblioteca estándar. Las fuentes teóricas y la asistencia utilizada se declaran en `FUENTES.md`.
+**¿Se usó una librería de regex?** No para el parser, Thompson, subconjuntos, simulación ni tokenización. Las estructuras son de la biblioteca estándar. Las fuentes teóricas se declaran en `FUENTES.md`.
 
 **¿Cuál es la complejidad?** Thompson genera un número de estados lineal en la expresión expandida. La determinización puede ser exponencial en el peor caso. La simulación del AFD realiza una consulta de tabla por carácter y es lineal en la longitud de entrada; el recorrido almacenado también ocupa memoria lineal. El tokenizador de varias reglas no tiene esa misma garantía global: puede explorar prefijos largos repetidamente antes de decidir cada token.
 

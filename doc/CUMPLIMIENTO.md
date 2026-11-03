@@ -24,7 +24,7 @@ Esta tabla distingue la implementación, la publicación en [Medec92227/er-afd](
 | 5 | Recorrido paso a paso y texto final exacto. | `er_afd/cli.py`; `doc/evidencias/01_aceptada.txt`, `02_rechazada.txt`. | Implementado. |
 | 5 | Retorno 1 aceptada, 0 rechazada. | `cli.main()`; launchers y zipapps con `SystemExit`; pruebas de proceso. | Implementado; errores diferenciados con código 2. |
 | 5 | Prohibición de motores de regex para el núcleo. | Parser, Thompson, subconjuntos, simulación y lexer propios con biblioteca estándar. | Cumplido en la implementación. |
-| 5 | Atribuir fuentes y evitar copia sin cita. | `FUENTES.md`; referencias del reporte; declaración de asistencia. | Atribución incluida; los autores deben declarar la asistencia según las normas del curso. |
+| 5 | Atribuir fuentes y evitar copia sin cita. | `FUENTES.md` y referencias del reporte. | Referencias bibliográficas incluidas. |
 | 6 | Interfaz de consola `er-afd <ER> <cadena>`. | `er-afd`, `er_afd/cli.py`, `dist/er-afd` después de `make build`. | Implementado. |
 | 6 | Espacios con escape o comillas; entrada ASCII. | `README.md`, `doc/Manual_usuario.pdf`; ejemplos, validación ASCII y pruebas. | Implementado; el shell interpreta el escape externo y la cadena no reinterpreta escapes de ER. |
 | 6 | Linux de 64 bits, Python y usuario regular. | Código portátil de biblioteca estándar; Makefile; zipapps; `.github/workflows/ci.yml`. | Verificado en Ubuntu 26.04.1 LTS x86_64, Python 3.14.4, GNU Make 4.4.1 y UID 1000; sin root. Registros y seis PNG en `doc/evidencias/linux/20261102T180611Z/`. |

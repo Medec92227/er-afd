@@ -190,7 +190,7 @@ python3 -m tests.additional_validation --output "$HOME/erafd-adicionales-$(date 
 | [Pasos de pruebas en Ubuntu](doc/PASOS_PRUEBAS_UBUNTU.md) | Reproducción de las pruebas y capturas. |
 | [Guion de defensa](doc/DEFENSA.md) | Demostración, diseño, métricas y preguntas en 10 minutos. |
 
-Los PDF mantienen el formato universitario y las portadas de los integrantes. [Fuentes y asistencia utilizada](FUENTES.md).
+Los PDF mantienen el formato universitario y las portadas de los integrantes. [Fuentes consultadas](FUENTES.md).
 
 ## Makefile
 
@@ -218,7 +218,7 @@ doc/                    Tres PDF, auditoría, guías y evidencia reproducible
 doc/img/                Visualización del ejemplo calculado
 .github/workflows/      Verificación automática en Ubuntu
 Makefile                config · build · run · test · clean
-FUENTES.md              Referencias y declaración de asistencia
+FUENTES.md              Referencias bibliográficas
 ```
 
 Los ejecutables de `dist/` se generan con `make build`. El manifiesto `SHA256SUMS.json` pertenece al ZIP de distribución, no al repositorio de fuentes.
