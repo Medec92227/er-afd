@@ -13,7 +13,7 @@ para decir si la cadena se acepta o se rechaza.
 ![Linux](https://img.shields.io/badge/Linux-64_bits-17334f?logo=linux&logoColor=white)
 ![Sin dependencias](https://img.shields.io/badge/dependencias-ninguna-087f8c)
 
-[Instalación](#instalación) · [Uso](#uso) · [Sintaxis](#sintaxis) · [Pruebas](#pruebas-y-métricas) · [Documentación (PDF)](doc/)
+**[🌐 Probar en línea](https://mango-beach-0a540511e.3.azurestaticapps.net)** · [Instalación](#instalación) · [Uso](#uso) · [Sintaxis](#sintaxis) · [Pruebas](#pruebas-y-métricas) · [Documentación (PDF)](doc/)
 
 </div>
 
@@ -112,6 +112,8 @@ er-lex --rules examples/reglas.json --file examples/programa.txt
 ```
 
 ## Página web
+
+En línea: **https://mango-beach-0a540511e.3.azurestaticapps.net**
 
 La carpeta `web/` tiene una versión en el navegador. Usa el mismo paquete `er_afd`, que se ejecuta
 con [Pyodide](https://pyodide.org), y además dibuja el AFND y el AFD y anima el recorrido paso a paso.
