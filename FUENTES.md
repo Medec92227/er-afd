@@ -6,5 +6,4 @@
 - Aho, A. V., Lam, M. S., Sethi, R. y Ullman, J. D. (2007). *Compilers: Principles, Techniques, and Tools* (2.ª ed.), cap. 3.7: de expresiones regulares a autómatas. Pearson.
 - Python Software Foundation. Documentación de `zipapp`, `argparse` y `unittest`. https://docs.python.org/3/
 
-## Herramientas de apoyo
 
