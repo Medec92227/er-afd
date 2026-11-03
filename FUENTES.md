@@ -18,6 +18,3 @@ El código Python se desarrolló para este proyecto con asistencia de Codex. No 
 
 Consulta: 30 de octubre de 2026. Los diagramas, pruebas y explicaciones del proyecto se elaboraron específicamente para esta entrega. Las referencias describen los fundamentos; la organización concreta del parser, las clases ASCII y la presentación corresponden a esta implementación.
 
-## Presentación del repositorio
-
-La organización visual del README se inspiró, a solicitud del equipo, en [AutoAudit de Gaston1x](https://github.com/Gaston1x/autoaudit): portada, galería, arquitectura y acceso a la documentación. Los algoritmos, las métricas, el diagrama del recorrido y las evidencias presentados aquí pertenecen a ER-AFD.
