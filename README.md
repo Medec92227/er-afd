@@ -7,7 +7,7 @@
 Escribe una expresión y una cadena. ER-AFD construye el AFND con Thompson,
 obtiene el AFD por subconjuntos y muestra sus tablas y el recorrido de la entrada.
 
-[![Verificación Linux](https://github.com/Medec92227/er-afd/actions/workflows/ci.yml/badge.svg)](https://github.com/Medec92227/er-afd/actions/workflows/ci.yml)
+[![Verificación Linux](https://github.com/Medec92227/er-afd/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Medec92227/er-afd/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-17334f?logo=python&logoColor=white)
 ![Ubuntu local](https://img.shields.io/badge/Ubuntu-26.04.1_LTS-17334f?logo=ubuntu&logoColor=white)
 ![Biblioteca estándar](https://img.shields.io/badge/dependencias-biblioteca_est%C3%A1ndar-087f8c)
