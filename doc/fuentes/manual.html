@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>ER-AFD - Manual de usuario</title><link rel="stylesheet" href="estilo.css"></head>
+<body>
+{{PORTADA:Manual de usuario}}
+
+<h1>1. Requisitos</h1>
+<ul>
+<li>Linux de 64 bits (cualquier distribución).</li>
+<li>Python 3.10 o superior (<code>python3 --version</code>).</li>
+<li>GNU Make y Git. En Ubuntu: <code>sudo apt install make git</code>, si no están instalados.</li>
+</ul>
+<p>El programa solo usa la biblioteca estándar de Python, no instala paquetes y no necesita permisos de root.</p>
+
+<h1>2. Instalación</h1>
+<pre>git clone https://github.com/Medec92227/er-afd.git
+cd er-afd
+make config
+make build</pre>
+<p><code>make build</code> crea dos ejecutables en <code>dist/</code>: <code>er-afd</code> y <code>er-lex</code>. Para
+llamarlos por su nombre desde cualquier carpeta, se agrega <code>dist/</code> al <code>PATH</code> de la terminal:</p>
+<pre>export PATH="$PWD/dist:$PATH"</pre>
+<p>Sin ese paso también funcionan como <code>./dist/er-afd</code> o <code>python3 -m er_afd</code>.</p>
+
+<table>
+<tr><th>Comando</th><th>Qué hace</th></tr>
+<tr><td><code>make config</code></td><td>Revisa que la versión de Python sea compatible.</td></tr>
+<tr><td><code>make build</code></td><td>Genera <code>dist/er-afd</code> y <code>dist/er-lex</code>.</td></tr>
+<tr><td><code>make run</code></td><td>Ejecuta el ejemplo <code>(a|b)*abb</code> con <code>aabb</code>. Se cambia con <code>make run ER='a*b' CADENA='aab'</code>.</td></tr>
+<tr><td><code>make test</code></td><td>Corre las pruebas unitarias.</td></tr>
+<tr><td><code>make metricas</code></td><td>Calcula las métricas de precisión.</td></tr>
+<tr><td><code>make clean</code></td><td>Borra <code>build/</code>, <code>dist/</code> y las cachés de Python.</td></tr>
+</table>
+
+<h1>3. Uso</h1>
+<pre>er-afd &lt;ER&gt; &lt;cadena&gt;</pre>
+<p>Conviene escribir la ER entre comillas simples, para que la terminal no interprete <code>*</code>, <code>|</code>,
+<code>(</code> ni <code>\</code>. Si la ER o la cadena tienen espacios se usa <code>\ </code> o comillas
+dobles:</p>
+<pre>er-afd '(a|b)*abb' 'aabb'
+er-afd hola\ mundo hola\ mundo
+er-afd "hola mundo" "hola mundo"</pre>
+
+<h2>Qué muestra</h2>
+<ol>
+<li>El AFND: <code>Q</code> (estados q0, q1, …), <code>Σ</code>, <code>F</code> (estados finales) y una línea
+<code>qi|símbolo|{destinos}</code> por transición.</li>
+<li>El AFD: <code>Q</code> (estados Q0, Q1, …), <code>Σ</code>, <code>F</code> y una línea <code>Qi|símbolo|Qj</code>
+por transición.</li>
+<li>El recorrido de la cadena, una línea <code>Qi|carácter|Qj</code> por cada carácter leído.</li>
+<li><code>Cadena aceptada</code> o <code>Cadena rechazada</code>.</li>
+</ol>
+<p><code>q0</code> y <code>Q0</code> son siempre los estados iniciales. Si en el AFD un carácter no tiene transición desde
+el estado actual, el recorrido se detiene en ese punto y la cadena se rechaza.</p>
+<pre>$ er-afd 'ab*' 'abb'
+...
+Q0|a|Q1
+Q1|b|Q2
+Q2|b|Q2
+Cadena aceptada
+$ echo $?
+1</pre>
+
+<h2>Código de retorno</h2>
+<table>
+<tr><th>Código</th><th>Significado</th></tr>
+<tr><td>1</td><td>La cadena fue aceptada.</td></tr>
+<tr><td>0</td><td>La cadena fue rechazada.</td></tr>
+<tr><td>2</td><td>Error: ER mal escrita, carácter fuera de ASCII o archivo que no existe.</td></tr>
+</table>
+
+<h2>Opciones</h2>
+<table>
+<tr><th>Opción</th><th>Uso</th></tr>
+<tr><td><code>--verbose</code></td><td>Muestra también qué estados del AFND forman cada estado del AFD.</td></tr>
+<tr><td><code>--file RUTA</code></td><td>Lee la cadena desde un archivo, en lugar del segundo argumento.</td></tr>
+<tr><td><code>--json</code></td><td>Imprime los autómatas y el recorrido en JSON.</td></tr>
+<tr><td><code>--dot PREFIJO</code></td><td>Crea <code>PREFIJO.afnd.dot</code> y <code>PREFIJO.afd.dot</code> para dibujarlos con Graphviz (<code>dot -Tpng</code>).</td></tr>
+<tr><td><code>--max-states N</code></td><td>Máximo de estados del AFD (4096 por defecto).</td></tr>
+</table>
+
+<h1>4. Sintaxis de las expresiones</h1>
+<table>
+<tr><th>Símbolo</th><th>Significado</th><th>Ejemplo</th></tr>
+<tr><td><code>ab</code></td><td>Concatenación</td><td><code>hola</code></td></tr>
+<tr><td><code>a|b</code></td><td>Unión</td><td><code>si|no</code></td></tr>
+<tr><td><code>a*</code></td><td>Cero o más repeticiones</td><td><code>(ab)*</code></td></tr>
+<tr><td><code>(r)</code></td><td>Agrupación</td><td><code>(a|b)c</code></td></tr>
+<tr><td><code>.</code></td><td>Cualquier carácter</td><td><code>a.b</code></td></tr>
+<tr><td><code>ε</code></td><td>Cadena vacía</td><td><code>(a|ε)b</code></td></tr>
+<tr><td><code>[abc]</code></td><td>Uno de los caracteres</td><td><code>[aeiou]</code></td></tr>
+<tr><td><code>[a-z]</code></td><td>Rango</td><td><code>[0-9A-F]</code></td></tr>
+<tr><td><code>[^abc]</code></td><td>Cualquier carácter excepto esos</td><td><code>[^0-9]</code></td></tr>
+<tr><td><code>\c</code></td><td>El carácter <code>c</code> literal</td><td><code>\*</code>, <code>\|</code>, <code>\\</code></td></tr>
+<tr><td><code>\N</code></td><td>Un dígito</td><td><code>\N\N\N\N</code></td></tr>
+<tr><td><code>\A</code> / <code>\a</code> / <code>\z</code></td><td>Mayúscula / minúscula / letra</td><td><code>\A\a*</code></td></tr>
+<tr><td><code>\hXX</code></td><td>Carácter por su código hexadecimal</td><td><code>\h20</code> (espacio)</td></tr>
+</table>
+<p>No existen <code>+</code>, <code>?</code> ni <code>{m,n}</code>: se escriben como texto literal. Para "uno o más" se
+usa <code>rr*</code>; por ejemplo, <code>\N\N*</code> son uno o más dígitos.</p>
+
+<h1>5. Tokenizar un archivo (er-lex)</h1>
+<p>Las reglas se escriben en un JSON, en orden de prioridad:</p>
+<pre>[
+  {"name": "ESPACIO", "regex": "[\\h20\\h09\\h0A\\h0D][\\h20\\h09\\h0A\\h0D]*", "skip": true},
+  {"name": "SI", "regex": "if"},
+  {"name": "IDENTIFICADOR", "regex": "(\\z|_)(\\z|\\N|_)*"},
+  {"name": "NUMERO", "regex": "\\N\\N*"}
+]</pre>
+<pre>er-lex --rules examples/reglas.json --file examples/programa.txt
+er-lex --rules examples/reglas.json --text 'if x = 10;' --json</pre>
+<p>Devuelve 0 si pudo tokenizar todo el texto y 2 si encuentra un carácter que ninguna regla reconoce.</p>
+
+<h1>6. Problemas comunes</h1>
+<table>
+<tr><th>Problema</th><th>Solución</th></tr>
+<tr><td><code>make: command not found</code></td><td>Instalar make: <code>sudo apt install make</code>.</td></tr>
+<tr><td><code>er-afd: command not found</code></td><td>Ejecutar <code>make build</code> y <code>export PATH="$PWD/dist:$PATH"</code>, o usar <code>./dist/er-afd</code>.</td></tr>
+<tr><td>La terminal cambia la ER</td><td>Escribir la ER entre comillas simples: <code>'(a|b)*'</code>.</td></tr>
+<tr><td><code>Error: … no ASCII</code></td><td>La cadena tiene tildes o ñ. El programa trabaja con ASCII (códigos 0 a 127).</td></tr>
+<tr><td>Un script con <code>set -e</code> se detiene al aceptar</td><td>Es normal: la aceptación devuelve 1. Revisar <code>$?</code> en lugar de usar <code>set -e</code>.</td></tr>
+</table>
+</body>
+</html>

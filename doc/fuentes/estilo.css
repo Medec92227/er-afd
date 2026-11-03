@@ -1,0 +1,64 @@
+@page {
+  size: letter;
+  margin: 2.2cm 2.3cm 2.2cm 2.3cm;
+  @top-left { content: "ER-AFD"; font: bold 8.5pt "Liberation Serif", "Times New Roman", serif; color: #444; }
+  @top-right { font: 8.5pt "Liberation Serif", "Times New Roman", serif; color: #444; }
+  @bottom-right { content: counter(page); font: 9pt "Liberation Serif", "Times New Roman", serif; }
+}
+@page :first {
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-right { content: none; }
+}
+
+body {
+  font-family: "Liberation Serif", "Times New Roman", serif;
+  font-size: 11.5pt;
+  line-height: 1.45;
+  color: #111;
+}
+
+.portada {
+  height: 22.6cm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: url("escudo.png") center 52% / 15cm no-repeat;
+  page-break-after: always;
+}
+.portada .u { font-size: 15pt; font-weight: bold; margin-top: 0.4cm; }
+.portada .f { font-size: 12.5pt; font-weight: bold; margin-top: 0.25cm; }
+.portada .c { font-size: 11.5pt; font-weight: bold; margin-top: 0.25cm; }
+.portada .t { margin-top: 7.2cm; font-size: 24pt; font-weight: bold; }
+.portada .st { font-size: 15pt; font-weight: bold; margin-top: 0.2cm; }
+.portada .d { font-size: 13pt; font-weight: bold; margin-top: 0.9cm; }
+.portada .autores { margin-top: auto; font-size: 11pt; }
+.portada .autores b { display: block; margin-bottom: 0.15cm; }
+.portada .fecha { margin-top: 0.6cm; font-size: 11pt; }
+
+h1 { font-size: 17pt; margin: 0.9cm 0 0.25cm; border-bottom: 1px solid #999; padding-bottom: 2px; }
+h1:first-of-type { margin-top: 0; }
+h2 { font-size: 13.5pt; margin: 0.55cm 0 0.15cm; }
+h3 { font-size: 12pt; margin: 0.4cm 0 0.1cm; }
+p { margin: 0.15cm 0; text-align: justify; }
+h1, h2, h3 { page-break-after: avoid; }
+
+code, pre { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 9.2pt; }
+code { background: #f1f1f1; padding: 0 2px; }
+pre { background: #f4f4f4; border: 1px solid #ddd; padding: 6px 9px; line-height: 1.3; page-break-inside: avoid; white-space: pre-wrap; }
+
+table { border-collapse: collapse; width: 100%; margin: 0.25cm 0; font-size: 10.5pt; page-break-inside: avoid; }
+th, td { border: 1px solid #aaa; padding: 3px 6px; text-align: left; vertical-align: top; }
+th { background: #e6e6e6; }
+td code { background: none; }
+
+figure { margin: 0.3cm 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; border: 1px solid #888; }
+figure img.terminal { max-height: 15.5cm; }
+figcaption { font-size: 9.5pt; color: #333; margin-top: 3px; }
+svg { max-width: 100%; }
+.salto { page-break-before: always; }
+.nota { font-size: 10pt; color: #333; }
+ul, ol { margin: 0.1cm 0 0.15cm; }
+li { margin: 0.05cm 0; }

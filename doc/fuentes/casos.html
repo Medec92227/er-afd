@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>ER-AFD - Casos de prueba</title><link rel="stylesheet" href="estilo.css"></head>
+<body>
+{{PORTADA:Casos de prueba}}
+
+<h1>1. Entorno de prueba</h1>
+<p>Todas las capturas son de una terminal de Ubuntu 26.04.1 LTS de 64 bits (WSL 2), con Python 3.14.4 y GNU Make
+4.4.1, y un usuario normal sin permisos de root. Los comandos se ejecutaron desde la raíz del repositorio después de
+<code>make build</code>.</p>
+
+<table>
+<tr><th>#</th><th>Caso</th><th>Comando</th><th>Esperado</th><th>Obtenido</th></tr>
+<tr><td>1</td><td>Configuración y construcción</td><td><code>make config</code>, <code>make build</code></td><td>Sin errores</td><td>OK</td></tr>
+<tr><td>2</td><td>Pruebas y métricas</td><td><code>make test</code>, <code>make metricas</code></td><td>Todas pasan</td><td>42/42</td></tr>
+<tr><td>3</td><td>Cadena aceptada</td><td><code>er-afd 'ab*' 'abb'</code></td><td>Aceptada, 1</td><td>Aceptada, 1</td></tr>
+<tr><td>4</td><td>Autómata más complejo</td><td><code>er-afd '(a|b)*abb' 'aabb'</code></td><td>Aceptada, 1</td><td>Aceptada, 1</td></tr>
+<tr><td>5</td><td>Cadenas rechazadas</td><td><code>er-afd 'ab*' 'aba'</code>, <code>'(a|b)*abb' 'aaba'</code></td><td>Rechazada, 0</td><td>Rechazada, 0</td></tr>
+<tr><td>6</td><td>Errores de sintaxis y de entrada</td><td><code>[z-a]</code>, <code>(ab</code>, <code>a\h4</code>, <code>a|</code>, <code>niño</code></td><td>Error, 2</td><td>Error, 2</td></tr>
+<tr><td>7</td><td>Escapes, espacios y secuencias especiales</td><td><code>\ </code>, comillas, <code>\h</code>, <code>\N</code>, <code>\A</code>, <code>\a</code>, <code>\z</code>, <code>[^…]</code>, <code>[a-c]</code></td><td>Según la tabla 7</td><td>Coincide</td></tr>
+<tr><td>8</td><td>Punto y épsilon en Σ</td><td><code>er-afd 'bεa.' 'ba-'</code></td><td>Σ={b,ε,a,.}, aceptada</td><td>Coincide</td></tr>
+<tr><td>9</td><td>Tokenización con varias ER</td><td><code>er-lex --rules examples/reglas.json …</code></td><td>7 tokens</td><td>7 tokens</td></tr>
+<tr><td>10</td><td><code>make run</code> y <code>make clean</code></td><td><code>make run ER='a*b' CADENA='aab'</code></td><td>Aceptada; limpieza</td><td>OK</td></tr>
+</table>
+
+<h1>2. Métricas de precisión</h1>
+<p>Se calculan con <code>make metricas</code> (archivo <code>tests/metricas.py</code>) y se guardan en
+<code>doc/metricas.json</code>. Hay dos mediciones:</p>
+<ol>
+<li><b>Casos con resultado esperado.</b> 1499 pares (ER, cadena) escritos a mano en <code>tests/cases.py</code>, con
+positivos y negativos para cada operador: literales, concatenación, unión, precedencia, paréntesis, Kleene, punto,
+ε, conjuntos, rangos, conjuntos negativos, escapes, <code>\N</code>, <code>\A</code>, <code>\a</code>, <code>\z</code>
+y <code>\h</code>. Las clases se prueban contra los 128 caracteres ASCII.</li>
+<li><b>AFD contra AFND.</b> Para 26 expresiones, el resultado del AFD se compara con una simulación directa del AFND
+(escrita aparte en las pruebas) en todas las cadenas de longitud 0 a 4 sobre el alfabeto <code>abc1␣</code>: 781
+cadenas por expresión.</li>
+</ol>
+<table>
+<tr><th>Medición</th><th>Resultado</th></tr>
+<tr><td>Casos con resultado esperado</td><td>1499 de 1499 correctos (100 %)</td></tr>
+<tr><td>Verdaderos positivos / verdaderos negativos</td><td>710 / 789</td></tr>
+<tr><td>Falsos positivos / falsos negativos</td><td>0 / 0</td></tr>
+<tr><td>Precisión y exhaustividad</td><td>1.00 y 1.00</td></tr>
+<tr><td>AFD contra AFND</td><td>20306 de 20306 cadenas coinciden</td></tr>
+<tr><td>Pruebas unitarias</td><td>42 de 42</td></tr>
+</table>
+
+<h1 class="salto">3. Capturas de ejecución</h1>
+
+<h2>Caso 1. Entorno, configuración y construcción</h2>
+<p>Se ve la distribución, la arquitectura de 64 bits y que el usuario no es root. <code>make config</code> revisa la
+versión de Python y <code>make build</code> genera los ejecutables <code>dist/er-afd</code> y <code>dist/er-lex</code>.</p>
+<figure><img class="terminal" src="../capturas/01_entorno.png"><figcaption>Captura 1. make config y make build.</figcaption></figure>
+
+<h2>Caso 2. Pruebas unitarias y métricas</h2>
+<figure><img class="terminal" src="../capturas/02_pruebas.png"><figcaption>Captura 2. make test y make metricas.</figcaption></figure>
+
+<h2>Caso 3. Cadena aceptada</h2>
+<p><code>ab*</code> genera un AFND de 6 estados y un AFD de 3. Se imprimen ambas tablas con el formato
+<code>estado|símbolo|destino</code>, después el recorrido de <code>abb</code> y el mensaje final. El código de
+retorno es 1.</p>
+<figure><img class="terminal" src="../capturas/03_aceptada.png"><figcaption>Captura 3. er-afd 'ab*' 'abb'.</figcaption></figure>
+
+<h2>Caso 4. Autómata más complejo: (a|b)*abb</h2>
+<p>Combina unión, cerradura y concatenación. El AFND tiene 14 estados y el AFD 5. El recorrido de <code>aabb</code>
+pasa por Q0, Q1, Q1, Q3 y Q4, y termina en un estado final. El reporte técnico explica cómo se forma cada estado
+del AFD.</p>
+<figure><img class="terminal" src="../capturas/04_compleja.png"><figcaption>Captura 4. er-afd '(a|b)*abb' 'aabb'.</figcaption></figure>
+
+<h2>Caso 5. Cadenas rechazadas</h2>
+<p>Con <code>ab*</code> y <code>aba</code>, desde Q2 no hay transición con <code>a</code>. El recorrido se detiene ahí y
+la cadena se rechaza con retorno 0. Con <code>(a|b)*abb</code> y <code>aaba</code> el recorrido termina en Q1, que no es
+final.</p>
+<figure><img class="terminal" src="../capturas/05_rechazada.png"><figcaption>Captura 5. Rechazo por falta de transición y por estado no final.</figcaption></figure>
+
+<h2>Caso 6. Errores</h2>
+<p>Un rango invertido, un paréntesis sin cerrar, un <code>\h</code> incompleto, una rama vacía y una cadena con
+caracteres fuera de ASCII. En todos se muestra el error con su posición y el retorno es 2, distinto de un rechazo.</p>
+<figure><img class="terminal" src="../capturas/06_errores.png"><figcaption>Captura 6. Errores de sintaxis y de entrada.</figcaption></figure>
+
+<h2>Caso 7. Escapes, espacios y secuencias especiales</h2>
+<table>
+<tr><th>ER</th><th>Cadena</th><th>Esperado</th><th>Qué se prueba</th></tr>
+<tr><td><code>hola\ mundo</code></td><td><code>hola mundo</code></td><td>Aceptada</td><td>Espacio con escape</td></tr>
+<tr><td><code>"hola mundo"</code></td><td><code>"hola mundo"</code></td><td>Aceptada</td><td>Espacio con comillas dobles</td></tr>
+<tr><td><code>hola\h20mundo</code></td><td><code>hola mundo</code></td><td>Aceptada</td><td><code>\h20</code> es el espacio</td></tr>
+<tr><td><code>\h41\h42</code></td><td><code>AB</code></td><td>Aceptada</td><td>Código hexadecimal</td></tr>
+<tr><td><code>\N\N*</code></td><td><code>2026</code> / <code>20x6</code></td><td>Aceptada / Rechazada</td><td>Dígitos</td></tr>
+<tr><td><code>\A\a*</code></td><td><code>Guatemala</code></td><td>Aceptada</td><td>Mayúscula y minúsculas</td></tr>
+<tr><td><code>\z\z*</code></td><td><code>HoLa</code></td><td>Aceptada</td><td>Cualquier letra</td></tr>
+<tr><td><code>[^abc]</code></td><td><code>d</code> / <code>a</code></td><td>Aceptada / Rechazada</td><td>Conjunto negativo</td></tr>
+<tr><td><code>[a-c]x</code></td><td><code>bx</code></td><td>Aceptada</td><td>Rango</td></tr>
+<tr><td><code>\*\\</code></td><td><code>*\</code></td><td>Aceptada</td><td>Operadores como literales</td></tr>
+<tr><td><code>\p</code></td><td><code>p</code></td><td>Aceptada</td><td>Escape de un carácter normal</td></tr>
+</table>
+<figure><img class="terminal" src="../capturas/07_escapes.png"><figcaption>Captura 7. Escapes y secuencias especiales (solo se muestra la última línea de cada ejecución).</figcaption></figure>
+
+<h2>Caso 8. Punto y épsilon en el alfabeto</h2>
+<p>En <code>bεa.</code> el alfabeto del AFND respeta el orden de aparición, Σ={b,ε,a,.}, porque ε está escrito en la
+ER. El AFD no tiene ε. Desde Q2 la letra <code>a</code> y la <code>b</code> tienen su propia fila y el punto cubre
+cualquier otro carácter, como el <code>-</code> de la cadena.</p>
+<figure><img class="terminal" src="../capturas/08_punto_epsilon.png"><figcaption>Captura 8. er-afd 'bεa.' 'ba-'.</figcaption></figure>
+
+<h2>Caso 9. Tokenización de un archivo fuente</h2>
+<p><code>er-lex</code> compila cada regla de <code>examples/reglas.json</code> a su AFD y recorre el archivo con todos a
+la vez. Gana la coincidencia más larga y, en un empate, la primera regla: por eso <code>if</code> es <code>SI</code> y
+no <code>IDENTIFICADOR</code>. Los espacios se descartan con <code>"skip": true</code>.</p>
+<figure><img class="terminal" src="../capturas/09_lexer.png"><figcaption>Captura 9. er-lex sobre examples/programa.txt.</figcaption></figure>
+
+<h2>Caso 10. make run y make clean</h2>
+<p><code>make run</code> acepta la ER y la cadena como variables. Después, <code>make clean</code> deja solo los
+fuentes.</p>
+<figure><img class="terminal" src="../capturas/10_make_run_clean.png"><figcaption>Captura 10. make run y make clean.</figcaption></figure>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="utf-8"><title>ER-AFD - Reporte técnico</title><link rel="stylesheet" href="estilo.css"></head>
+<body>
+{{PORTADA:Reporte técnico}}
+
+
+<h1>1. Objetivo</h1>
+<p>ER-AFD es un programa de línea de comando que recibe una expresión regular (ER) y una cadena. Convierte la
+ER en un autómata finito no determinista (AFND) con el algoritmo de Thompson, convierte ese AFND en un autómata
+finito determinista (AFD) con la construcción de subconjuntos y recorre la matriz de transiciones del AFD para
+decidir si la cadena pertenece al lenguaje. El programa devuelve <code>1</code> si la cadena se acepta y
+<code>0</code> si se rechaza.</p>
+<p>Todo el proceso está escrito con estructuras estándar de Python (diccionarios, conjuntos, tuplas y colas).
+No se usa el módulo <code>re</code> ni ninguna otra librería de expresiones regulares.</p>
+
+<h2>Organización del código</h2>
+<table>
+<tr><th>Archivo</th><th>Responsabilidad</th></tr>
+<tr><td><code>er_afd/parser.py</code></td><td>Analizador descendente recursivo. Valida la ER y construye el árbol de sintaxis.</td></tr>
+<tr><td><code>er_afd/automata.py</code></td><td>Construcción de Thompson, cerradura ε, construcción de subconjuntos, simulación del AFD y formato de las tablas.</td></tr>
+<tr><td><code>er_afd/cli.py</code></td><td>Comando <code>er-afd &lt;ER&gt; &lt;cadena&gt;</code>: lee los argumentos, imprime las tablas y el recorrido y devuelve el código de retorno.</td></tr>
+<tr><td><code>er_afd/lexer.py</code></td><td>Comando adicional <code>er-lex</code>: tokeniza un texto usando un conjunto de ER.</td></tr>
+<tr><td><code>tests/</code></td><td>Pruebas unitarias y cálculo de métricas de precisión.</td></tr>
+</table>
+
+<pre>Expresión regular ──► parser ──► árbol ──► Thompson ──► AFND ──► subconjuntos ──► AFD
+                                                                                   │
+Cadena ───────────────────────────────────────────────────────────► recorrido ◄────┘
+                                                                        │
+                                                  Cadena aceptada (1) / rechazada (0)</pre>
+
+<h1>2. Análisis de la expresión regular</h1>
+<p>El parser es descendente recursivo: hay una función por cada nivel de precedencia. La gramática es:</p>
+<pre>union  := concat ( "|" concat )*
+concat := repeat repeat*
+repeat := atom "*"*
+atom   := literal | "." | "ε" | conjunto | escape | "(" union ")"</pre>
+<p>Como <code>union</code> llama a <code>concat</code>, que llama a <code>repeat</code>, que llama a <code>atom</code>,
+la precedencia queda de mayor a menor así: paréntesis, cerradura <code>*</code>, concatenación y unión. Por ejemplo,
+<code>ab*</code> es una <code>a</code> seguida de cero o más <code>b</code>, y <code>a|bc</code> es <code>a</code> o
+<code>bc</code>. La concatenación no tiene operador: se reconoce cuando un átomo sigue a otro.</p>
+
+<h2>Símbolos y secuencias especiales</h2>
+<table>
+<tr><th>Entrada</th><th>Cómo se interpreta</th></tr>
+<tr><td><code>.</code></td><td>Cualquier carácter ASCII (códigos 0 a 127). Se agrega a Σ como el símbolo <code>.</code>.</td></tr>
+<tr><td><code>ε</code></td><td>Cadena vacía. Produce una transición ε en el AFND.</td></tr>
+<tr><td><code>[abc]</code>, <code>[a-z]</code></td><td>Se expanden a cada carácter del conjunto; <code>[abc]</code> equivale a <code>a|b|c</code>.</td></tr>
+<tr><td><code>[^abc]</code></td><td>Un solo símbolo de Σ que representa todos los caracteres ASCII excepto los del conjunto.</td></tr>
+<tr><td><code>\N</code>, <code>\A</code>, <code>\a</code>, <code>\z</code></td><td>Dígitos, mayúsculas, minúsculas y todas las letras, igual que <code>[0-9]</code>, <code>[A-Z]</code>, <code>[a-z]</code> y <code>[a-zA-Z]</code>.</td></tr>
+<tr><td><code>\hXX</code></td><td>El carácter con código hexadecimal <code>XX</code> (de 00 a 7F). <code>\h20</code> es el espacio.</td></tr>
+<tr><td><code>\c</code></td><td>Cualquier otro carácter después de <code>\</code> se toma literal: <code>\*</code>, <code>\|</code>, <code>\\</code>, <code>\p</code>.</td></tr>
+</table>
+<p>El alfabeto Σ se arma en el orden en que los símbolos aparecen en la ER. Si la ER contiene <code>ε</code>, ocupa su
+posición; si no, se agrega al final del alfabeto del AFND, como pide el enunciado. Una ER vacía, un paréntesis sin
+cerrar, un rango invertido como <code>[z-a]</code> o un <code>\h</code> sin dos dígitos son errores de sintaxis: el
+programa indica la posición del error y devuelve <code>2</code>.</p>
+
+<h1>3. Construcción de Thompson (ER → AFND)</h1>
+<p>El árbol se recorre en postorden. Cada nodo produce un fragmento con un estado de entrada y uno de salida, y los
+fragmentos se combinan según la operación:</p>
+
+<figure>
+<svg viewBox="0 0 640 400" width="600" xmlns="http://www.w3.org/2000/svg" font-family="Liberation Serif, Times New Roman, serif" font-size="14">
+  <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+  <g fill="none" stroke="#000" stroke-width="1.3">
+    <!-- símbolo -->
+    <circle cx="60" cy="40" r="16"/><circle cx="180" cy="40" r="16"/><circle cx="180" cy="40" r="12"/>
+    <path d="M76 40 L163 40" marker-end="url(#f)"/>
+    <!-- concatenación -->
+    <rect x="300" y="22" width="110" height="36" rx="6"/><rect x="470" y="22" width="110" height="36" rx="6"/>
+    <path d="M410 40 L469 40" marker-end="url(#f)"/>
+    <!-- unión -->
+    <circle cx="60" cy="170" r="16"/><circle cx="330" cy="170" r="16"/><circle cx="330" cy="170" r="12"/>
+    <rect x="140" y="105" width="110" height="36" rx="6"/><rect x="140" y="199" width="110" height="36" rx="6"/>
+    <path d="M74 162 L139 126" marker-end="url(#f)"/><path d="M74 178 L139 214" marker-end="url(#f)"/>
+    <path d="M250 123 L317 162" marker-end="url(#f)"/><path d="M250 217 L317 178" marker-end="url(#f)"/>
+    <!-- cerradura -->
+    <circle cx="60" cy="330" r="16"/><circle cx="330" cy="330" r="16"/><circle cx="330" cy="330" r="12"/>
+    <rect x="140" y="312" width="110" height="36" rx="6"/>
+    <path d="M76 330 L139 330" marker-end="url(#f)"/><path d="M250 330 L313 330" marker-end="url(#f)"/>
+    <path d="M240 312 C 220 275, 170 275, 150 311" marker-end="url(#f)"/>
+    <path d="M70 343 C 120 395, 270 395, 320 344" marker-end="url(#f)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="120" y="33">c</text><text x="120" y="80" font-weight="bold">Símbolo c</text>
+    <text x="355" y="45">N(r)</text><text x="525" y="45">N(s)</text><text x="440" y="33">ε</text>
+    <text x="440" y="80" font-weight="bold">Concatenación rs</text>
+    <text x="195" y="128">N(r)</text><text x="195" y="222">N(s)</text>
+    <text x="98" y="135">ε</text><text x="98" y="215">ε</text><text x="290" y="135">ε</text><text x="290" y="215">ε</text>
+    <text x="470" y="175" font-weight="bold">Unión r|s</text>
+    <text x="195" y="335">N(r)</text>
+    <text x="106" y="322">ε</text><text x="282" y="322">ε</text><text x="195" y="276">ε</text><text x="195" y="372">ε</text>
+    <text x="470" y="335" font-weight="bold">Cerradura r*</text>
+  </g>
+</svg>
+<figcaption>Figura 1. Fragmentos de Thompson. El círculo doble es el estado de salida del fragmento.</figcaption>
+</figure>
+
+<table>
+<tr><th>Nodo</th><th>Regla en <code>thompson()</code></th></tr>
+<tr><td>Símbolo o conjunto</td><td>Dos estados nuevos y una transición con la etiqueta del símbolo.</td></tr>
+<tr><td><code>ε</code></td><td>Dos estados nuevos unidos por una transición ε.</td></tr>
+<tr><td>Concatenación <code>rs</code></td><td>Transición ε de la salida de <code>r</code> a la entrada de <code>s</code>.</td></tr>
+<tr><td>Unión <code>r|s</code></td><td>Estado inicial nuevo con ε hacia cada rama y estado final nuevo que recibe ε desde cada rama.</td></tr>
+<tr><td>Cerradura <code>r*</code></td><td>Estado inicial y final nuevos; ε para entrar a <code>r</code>, para repetirla, para salir y para saltarla.</td></tr>
+</table>
+<p>El recorrido usa una pila en lugar de recursión, así que expresiones largas como <code>aaaa…a</code> no llegan al
+límite de recursión de Python. Al terminar, los estados se renumeran para que el estado inicial sea
+<code>q0</code> (la unión y la cerradura crean su estado inicial después de sus hijos). El resultado tiene un solo
+estado final.</p>
+
+<h2>Cerradura ε</h2>
+<p>La cerradura ε de un conjunto de estados son todos los estados alcanzables sin consumir símbolos. Se calcula con
+una búsqueda en profundidad y un conjunto de visitados, para que los ciclos ε de la cerradura de Kleene no se
+recorran infinitamente:</p>
+<pre>cerradura(S):
+    visitados = S;  pendientes = S
+    mientras haya pendientes:
+        q = sacar(pendientes)
+        para cada t con q --ε--&gt; t:
+            si t no está en visitados: agregar t a visitados y a pendientes
+    devolver visitados</pre>
+
+<h1>4. Construcción de subconjuntos (AFND → AFD)</h1>
+<p>Cada estado del AFD es un conjunto de estados del AFND. <code>Q0</code> es la cerradura ε de <code>{q0}</code>.
+Una cola procesa los subconjuntos nuevos y les asigna nombres <code>Q1</code>, <code>Q2</code>, … en el orden en que
+aparecen:</p>
+<pre>Q0 = cerradura({q0});  cola = [Q0]
+mientras la cola no esté vacía:
+    S = sacar(cola)
+    para cada símbolo c:
+        T = cerradura(mover(S, c))
+        si T está vacío: no hay transición
+        si T es nuevo: darle el siguiente nombre Qi y meterlo a la cola
+        δ(S, c) = T
+S es final si contiene el estado final del AFND</pre>
+<p>Cuando <code>mover(S, c)</code> no tiene destinos no se agrega ninguna transición. No se crea un estado pozo: al
+recorrer la cadena, si un símbolo no tiene transición la cadena se rechaza en ese momento. Así la tabla muestra solo
+las transiciones útiles, igual que el ejemplo del enunciado.</p>
+
+<h2>Símbolos que se solapan</h2>
+<p>En una ER como <code>a|.</code> la letra <code>a</code> coincide con el símbolo <code>a</code> y también con el punto.
+Si el AFD usara las etiquetas tal cual, desde un mismo estado habría dos transiciones posibles para la letra
+<code>a</code> y dejaría de ser determinista. Por eso, antes de la construcción, <code>_partitions()</code> agrupa los
+128 caracteres ASCII según las etiquetas que los aceptan:</p>
+<table>
+<tr><th>Caracteres</th><th>Etiquetas que los aceptan</th><th>Columna del AFD</th></tr>
+<tr><td><code>a</code></td><td><code>a</code> y <code>.</code></td><td><code>a</code></td></tr>
+<tr><td>cualquier otro</td><td>solo <code>.</code></td><td><code>.</code> (cualquier carácter distinto de <code>a</code>)</td></tr>
+</table>
+<p>Con <code>a|.</code> el AFD queda con <code>Q0|a|Q1</code> y <code>Q0|.|Q2</code>. Para <code>a</code> se usa la fila
+<code>a</code> y para cualquier otro carácter la fila <code>.</code>. Solo si dos conjuntos amplios se solapan entre sí,
+como <code>.</code> y <code>[^a]</code>, aparece una columna auxiliar <code>C0</code>, y el programa imprime qué
+caracteres contiene. Con <code>--verbose</code> se muestran todas las clases y el subconjunto del AFND de cada estado.</p>
+
+<h1 class="salto">5. Ejemplo completo: (a|b)*abb</h1>
+<p>Es el autómata más grande de los casos de prueba y combina los tres operadores. Ejecución:
+<code>er-afd '(a|b)*abb' 'aabb'</code>.</p>
+<h2>AFND de Thompson</h2>
+<p>Q = {q0, …, q13}, Σ = {a, b, ε}, F = {q13}. <code>q0</code> y <code>q7</code> son la entrada y la salida de la
+cerradura; <code>q5</code> y <code>q6</code> las de la unión <code>a|b</code>; <code>q1→q2</code> y <code>q3→q4</code>
+leen <code>a</code> y <code>b</code> dentro de la unión, y <code>q8</code>–<code>q13</code> forman la concatenación
+<code>abb</code>, unida con transiciones ε.</p>
+<h2>Subconjuntos</h2>
+<table>
+<tr><th>AFD</th><th>Subconjunto del AFND</th><th>con a</th><th>con b</th><th>Final</th></tr>
+<tr><td>Q0</td><td>{q0,q1,q3,q5,q7,q8}</td><td>Q1</td><td>Q2</td><td></td></tr>
+<tr><td>Q1</td><td>{q1,q2,q3,q5,q6,q7,q8,q9,q10}</td><td>Q1</td><td>Q3</td><td></td></tr>
+<tr><td>Q2</td><td>{q1,q3,q4,q5,q6,q7,q8}</td><td>Q1</td><td>Q2</td><td></td></tr>
+<tr><td>Q3</td><td>{q1,q3,q4,q5,q6,q7,q8,q11,q12}</td><td>Q1</td><td>Q4</td><td></td></tr>
+<tr><td>Q4</td><td>{q1,q3,q4,q5,q6,q7,q8,q13}</td><td>Q1</td><td>Q2</td><td>sí</td></tr>
+</table>
+<p><code>Q4</code> es final porque contiene <code>q13</code>. Cada estado del AFD "recuerda" cuánto del sufijo
+<code>abb</code> se ha leído: <code>Q1</code> terminó en <code>a</code>, <code>Q3</code> en <code>ab</code> y
+<code>Q4</code> en <code>abb</code>.</p>
+
+<figure>
+<svg viewBox="0 0 660 345" width="600" xmlns="http://www.w3.org/2000/svg" font-family="Liberation Serif, Times New Roman, serif" font-size="15">
+  <defs><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+  <g fill="none" stroke="#000" stroke-width="1.3">
+    <circle cx="70" cy="170" r="24"/><circle cx="230" cy="90" r="24"/><circle cx="230" cy="270" r="24"/>
+    <circle cx="410" cy="90" r="24"/><circle cx="590" cy="90" r="24"/><circle cx="590" cy="90" r="19"/>
+    <path d="M10 170 L45 170" marker-end="url(#g)"/>
+    <path d="M91 159 L208 101" marker-end="url(#g)"/>
+    <path d="M90 183 L209 257" marker-end="url(#g)"/>
+    <path d="M216 71 C 196 28, 264 28, 244 71" marker-end="url(#g)"/>
+    <path d="M253 83 L387 83" marker-end="url(#g)"/>
+    <path d="M387 98 L253 98" marker-end="url(#g)"/>
+    <path d="M434 90 L565 90" marker-end="url(#g)"/>
+    <path d="M230 246 L230 115" marker-end="url(#g)"/>
+    <path d="M216 289 C 196 332, 264 332, 244 289" marker-end="url(#g)"/>
+    <path d="M572 106 C 520 175, 300 175, 247 107" marker-end="url(#g)"/>
+    <path d="M582 113 C 560 250, 330 290, 254 276" marker-end="url(#g)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="70" y="175">Q0</text><text x="230" y="95">Q1</text><text x="230" y="275">Q2</text>
+    <text x="410" y="95">Q3</text><text x="590" y="95">Q4</text>
+    <text x="142" y="122">a</text><text x="142" y="236">b</text><text x="230" y="30">a</text>
+    <text x="320" y="77">b</text><text x="320" y="114">a</text><text x="500" y="83">b</text>
+    <text x="242" y="185">a</text><text x="230" y="340">b</text>
+    <text x="410" y="164">a</text><text x="470" y="250">b</text>
+  </g>
+</svg>
+<figcaption>Figura 2. AFD generado para (a|b)*abb. Q0 es el inicial y Q4 el de aceptación.</figcaption>
+</figure>
+
+<h2>Recorrido de aabb</h2>
+<pre>Q0|a|Q1
+Q1|a|Q1
+Q1|b|Q3
+Q3|b|Q4
+Cadena aceptada</pre>
+<p>El recorrido consulta la tabla una vez por carácter: <code>estado = δ(estado, c)</code>. Termina en <code>Q4</code>,
+que es final, así que la cadena se acepta y el programa devuelve <code>1</code>. Con <code>aaba</code> el recorrido
+termina en <code>Q1</code>, que no es final, y devuelve <code>0</code>.</p>
+
+<h1>6. Simulación y códigos de retorno</h1>
+<table>
+<tr><th>Situación</th><th>Salida</th><th>Retorno</th></tr>
+<tr><td>Termina en un estado final</td><td><code>Cadena aceptada</code></td><td>1</td></tr>
+<tr><td>Termina en un estado no final, o un símbolo no tiene transición</td><td><code>Cadena rechazada</code></td><td>0</td></tr>
+<tr><td>ER inválida, carácter no ASCII o archivo inexistente</td><td><code>Error: …</code> (stderr)</td><td>2</td></tr>
+</table>
+<p>Que una aceptación devuelva <code>1</code> lo pide el enunciado, aunque en Linux normalmente <code>0</code> indica
+éxito. El código <code>2</code> separa los errores de los rechazos, para que una ER mal escrita no se confunda con una
+cadena rechazada.</p>
+
+<h2>Complejidad</h2>
+<ul>
+<li>Thompson crea a lo sumo dos estados por símbolo u operador: el AFND es lineal en el tamaño de la ER.</li>
+<li>La construcción de subconjuntos puede generar hasta 2<sup>n</sup> estados en el peor caso. El límite por defecto
+es de 4096 estados de AFD y se cambia con <code>--max-states</code>.</li>
+<li>El recorrido es lineal en la longitud de la cadena: una consulta a la tabla por carácter.</li>
+</ul>
+
+<h1>7. Funciones adicionales</h1>
+<ul>
+<li><code>--verbose</code>: muestra el subconjunto del AFND de cada estado del AFD.</li>
+<li><code>--json</code>: los dos autómatas y el recorrido en JSON.</li>
+<li><code>--dot PREFIJO</code>: genera archivos de Graphviz para dibujar el AFND y el AFD.</li>
+<li><code>--file RUTA</code>: lee la cadena desde un archivo.</li>
+<li><code>er-lex</code>: usa un conjunto de ER (en JSON) para separar un archivo fuente en tokens. Se queda con la
+coincidencia más larga y, si hay empate, con la primera regla.</li>
+</ul>
+
+<h1>8. Referencias</h1>
+<ol>
+<li>Ornélyz, R. (2026). <i>ER-AFD: Convertidor de ER a AFD. Proyecto del curso.</i> Universidad Mariano Gálvez de Guatemala.</li>
+<li>Thompson, K. (1968). Regular expression search algorithm. <i>Communications of the ACM, 11</i>(6), 419-422.</li>
+<li>Rabin, M. O. y Scott, D. (1959). Finite automata and their decision problems. <i>IBM Journal of Research and Development, 3</i>(2), 114-125.</li>
+<li>Aho, A. V., Lam, M. S., Sethi, R. y Ullman, J. D. (2007). <i>Compilers: Principles, Techniques, and Tools</i> (2.ª ed.), sección 3.7. Pearson.</li>
+</ol>
+<p class="nota">Usamos Codex como asistente durante el desarrollo; el detalle está en <code>FUENTES.md</code>.</p>
+</body>
+</html>

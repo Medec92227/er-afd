@@ -1,0 +1,23 @@
+{
+  "casos_esperados": {
+    "total": 1499,
+    "correctos": 1499,
+    "exactitud": 1.0,
+    "precision": 1.0,
+    "exhaustividad": 1.0,
+    "matriz_confusion": {
+      "tp": 710,
+      "tn": 789,
+      "fp": 0,
+      "fn": 0
+    },
+    "fallos": []
+  },
+  "afnd_vs_afd": {
+    "expresiones": 26,
+    "cadenas_por_expresion": 781,
+    "comparaciones": 20306,
+    "coincidencias": 20306,
+    "diferencias": []
+  }
+}
