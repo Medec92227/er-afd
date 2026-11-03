@@ -1,6 +1,4 @@
-# Fuentes y atribución
-
-El código Python se desarrolló para este proyecto con asistencia de Codex. No se incorporaron motores de expresiones regulares ni se copió una implementación de terceros. El equipo debe revisar, comprender y adaptar el código antes de presentarlo, y declarar la asistencia según las normas de su curso.
+# Fuentes y referencias
 
 ## Especificación
 
