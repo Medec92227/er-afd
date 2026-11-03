@@ -1,0 +1,23 @@
+[2J[HUbuntu: 05_lexer_y_escapes
+
++ ./dist/er-lex --rules examples/reglas.json --file examples/programa.txt
++ estado=0
++ python3 -c 'import json,os; from pathlib import Path; tokens=json.loads((Path(os.environ["EVIDENCE"])/"capturas/05_tokens.json").read_text()); [print(t["type"],repr(t["value"]),t["start"],t["end"]) for t in tokens]'
+SI 'if' 0 2
+IDENTIFICADOR 'contador' 3 11
+IGUAL '=' 12 13
+NUMERO '12' 14 16
+SUMA '+' 17 18
+IDENTIFICADOR 'valor' 19 24
+PUNTO_COMA ';' 24 25
++ printf 'Retorno del lexer: %s\n' 0
+Retorno del lexer: 0
++ ./dist/er-afd 'hola\ mundo' 'hola mundo' --json
++ estado=1
++ python3 -c 'import json,os; from pathlib import Path; r=json.loads((Path(os.environ["EVIDENCE"])/"capturas/05_espacio.json").read_text()); print("Espacio escapado, aceptada:",r["accepted"])'
+Espacio escapado, aceptada: True
++ printf 'Retorno con espacio escapado: %s (1 = aceptada)\n' 1
+Retorno con espacio escapado: 1 (1 = aceptada)
++ set +x
+
+Captura terminada. Evidencia guardada.

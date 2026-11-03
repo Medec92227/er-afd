@@ -1,0 +1,24 @@
+AFND
+Q={q0,q1}
+Σ={ε}
+Inicial=q0
+F={q1}
+q0|ε|{q1}
+
+AFD
+Q={Q0,Q1}
+Σ={}
+Γ={C0}
+Inicial=Q0
+F={Q0}
+Γ: particiones disjuntas de ASCII; incluyen la clase residual.
+C0={\h00..\h7F}
+Subconjuntos del AFND:
+Q0={q0,q1}
+Q1={}
+Q0|C0|Q1
+Q1|C0|Q1
+
+Recorrido
+Q0 (cadena vacía; no se consume ningún símbolo)
+Cadena aceptada

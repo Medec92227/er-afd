@@ -1,0 +1,39 @@
+[2J[HUbuntu: 03_automatas_aceptacion
+
++ ./dist/er-afd a a
+AFND
+Q={q0,q1}
+Σ={a,ε}
+Inicial=q0
+F={q1}
+q0|a|{q1}
+
+AFD
+Q={Q0,Q1,Q2}
+Σ={a}
+Γ={a,C1}
+Inicial=Q0
+F={Q1}
+Γ: particiones disjuntas de ASCII; incluyen la clase residual.
+a={a}
+C1={\h00..`,b..\h7F}
+Subconjuntos del AFND:
+Q0={q0}
+Q1={q1}
+Q2={}
+Q0|a|Q1
+Q0|C1|Q2
+Q1|a|Q2
+Q1|C1|Q2
+Q2|a|Q2
+Q2|C1|Q2
+
+Recorrido
+Q0|a|Q1
+Cadena aceptada
++ estado=1
++ printf 'Retorno: %s (1 = aceptada)\n' 1
+Retorno: 1 (1 = aceptada)
++ set +x
+
+Captura terminada. Evidencia guardada.

@@ -1,0 +1,9 @@
+[
+  {"name": "ESPACIO", "regex": "[\\h20\\h09\\h0A\\h0D][\\h20\\h09\\h0A\\h0D]*", "skip": true},
+  {"name": "SI", "regex": "if"},
+  {"name": "IDENTIFICADOR", "regex": "(\\z|_)(\\z|\\N|_)*"},
+  {"name": "NUMERO", "regex": "\\N\\N*"},
+  {"name": "IGUAL", "regex": "="},
+  {"name": "SUMA", "regex": "\\+"},
+  {"name": "PUNTO_COMA", "regex": ";"}
+]

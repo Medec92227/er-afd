@@ -1,0 +1,7 @@
+python3 -m er_afd "[z-a]" a
+
+
+STDERR:
+Error: Rango invertido en el conjunto (posición 2)
+
+Código de retorno: 2

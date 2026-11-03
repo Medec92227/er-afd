@@ -1,0 +1,104 @@
+{
+  "completed": true,
+  "completed_at_utc": "2026-11-02T18:04:45.104079+00:00",
+  "environment": {
+    "system": "Linux",
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "python": "3.14.4",
+    "executable": "/usr/bin/python3",
+    "uid": 1000
+  },
+  "checks": [
+    {
+      "check": "01_config",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "02_build",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "03_tests",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "04_make_run",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "05_aceptada",
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "check": "06_rechazada",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "07_error_sintaxis",
+      "expected": 2,
+      "actual": 2
+    },
+    {
+      "check": "08_vacia",
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "check": "09_json",
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "check": "10_dot",
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "check": "11_archivo",
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "check": "12_lexer",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "13_metricas",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "14_clean",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "15_rebuild",
+      "expected": 0,
+      "actual": 0
+    },
+    {
+      "check": "16_rebuild_aceptada",
+      "expected": 1,
+      "actual": 1
+    }
+  ],
+  "unit_tests": {
+    "run": 39,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "known_language_cases": 1499,
+  "differential_comparisons": 20306,
+  "note": "Resultados de esta ejecución. Las capturas de pantalla se añaden por separado."
+}

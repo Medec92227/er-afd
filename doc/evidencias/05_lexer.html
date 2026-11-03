@@ -1,0 +1,65 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>ER-AFD | Tokenización · conjunto de reglas</title><style>
+ *{box-sizing:border-box}body{margin:0;padding:36px;background:#edf3f6;color:#172b3a;font-family:Arial,sans-serif;max-width:1040px}header{padding-bottom:20px;border-bottom:4px solid #008878}.k{font-size:13px;letter-spacing:2px;color:#007c70;font-weight:700}h1{font-size:27px;margin:10px 0}p{font-size:14px;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#102736;color:#e9f6f7;padding:24px;border-radius:8px;font:17px/1.4 Consolas,monospace}.foot{font-size:13px;color:#496071}</style>
+ <header><span class="k">ER-AFD / EVIDENCIA DE EJECUCIÓN</span><h1>Tokenización · conjunto de reglas</h1><p>Registro capturado de un proceso real. Python 3.12.14 · Windows · 30/10/2026</p></header><pre>python3 -m er_afd.lexer --rules examples/reglas.json --file examples/programa.txt
+
+[
+  {
+    &quot;type&quot;: &quot;SI&quot;,
+    &quot;value&quot;: &quot;if&quot;,
+    &quot;start&quot;: 0,
+    &quot;end&quot;: 2,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 1
+  },
+  {
+    &quot;type&quot;: &quot;IDENTIFICADOR&quot;,
+    &quot;value&quot;: &quot;contador&quot;,
+    &quot;start&quot;: 3,
+    &quot;end&quot;: 11,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 4
+  },
+  {
+    &quot;type&quot;: &quot;IGUAL&quot;,
+    &quot;value&quot;: &quot;=&quot;,
+    &quot;start&quot;: 12,
+    &quot;end&quot;: 13,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 13
+  },
+  {
+    &quot;type&quot;: &quot;NUMERO&quot;,
+    &quot;value&quot;: &quot;12&quot;,
+    &quot;start&quot;: 14,
+    &quot;end&quot;: 16,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 15
+  },
+  {
+    &quot;type&quot;: &quot;SUMA&quot;,
+    &quot;value&quot;: &quot;+&quot;,
+    &quot;start&quot;: 17,
+    &quot;end&quot;: 18,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 18
+  },
+  {
+    &quot;type&quot;: &quot;IDENTIFICADOR&quot;,
+    &quot;value&quot;: &quot;valor&quot;,
+    &quot;start&quot;: 19,
+    &quot;end&quot;: 24,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 20
+  },
+  {
+    &quot;type&quot;: &quot;PUNTO_COMA&quot;,
+    &quot;value&quot;: &quot;;&quot;,
+    &quot;start&quot;: 24,
+    &quot;end&quot;: 25,
+    &quot;line&quot;: 1,
+    &quot;column&quot;: 25
+  }
+]
+
+Código de retorno: 0
+</pre><p class="foot">Salida estándar y de error conservadas en archivos TXT y ejecuciones.json. Esta es una captura del visor del registro, no de una terminal Linux.</p></html>

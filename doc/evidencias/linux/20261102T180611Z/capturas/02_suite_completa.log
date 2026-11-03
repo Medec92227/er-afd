@@ -1,0 +1,45 @@
+python3 -m unittest discover -s tests -v
+test_accepted_returns_one_and_exact_final_message (test_cli.CLITests.test_accepted_returns_one_and_exact_final_message) ... ok
+test_dot_exports_both_automata (test_cli.CLITests.test_dot_exports_both_automata) ... ok
+test_empty_string_can_be_passed_as_positional_argument (test_cli.CLITests.test_empty_string_can_be_passed_as_positional_argument) ... ok
+test_file_mode_reads_exact_content (test_cli.CLITests.test_file_mode_reads_exact_content) ... ok
+test_file_mode_reports_non_ascii_and_missing_file (test_cli.CLITests.test_file_mode_reports_non_ascii_and_missing_file) ... ok
+test_input_source_is_unambiguous (test_cli.CLITests.test_input_source_is_unambiguous) ... ok
+test_json_errors_stay_machine_readable (test_cli.CLITests.test_json_errors_stay_machine_readable) ... ok
+test_json_mode_emits_valid_json_without_text_tables (test_cli.CLITests.test_json_mode_emits_valid_json_without_text_tables) ... ok
+test_missing_arguments_return_two (test_cli.CLITests.test_missing_arguments_return_two) ... ok
+test_non_ascii_argument_returns_two (test_cli.CLITests.test_non_ascii_argument_returns_two) ... ok
+test_rejected_returns_zero_and_exact_final_message (test_cli.CLITests.test_rejected_returns_zero_and_exact_final_message) ... ok
+test_spaces_and_literal_escape_survive_argument_transport (test_cli.CLITests.test_spaces_and_literal_escape_survive_argument_transport) ... ok
+test_state_limit_error_returns_two (test_cli.CLITests.test_state_limit_error_returns_two) ... ok
+test_syntax_error_returns_two (test_cli.CLITests.test_syntax_error_returns_two) ... ok
+test_alphabet_preserves_source_order_and_epsilon_rule (test_engine.AutomatonInvariantTests.test_alphabet_preserves_source_order_and_epsilon_rule) ... ok
+test_core_does_not_import_a_regex_engine (test_engine.AutomatonInvariantTests.test_core_does_not_import_a_regex_engine) ... ok
+test_dfa_partition_classes_are_disjoint (test_engine.AutomatonInvariantTests.test_dfa_partition_classes_are_disjoint) ... ok
+test_dfa_state_budget_fails_explicitly (test_engine.AutomatonInvariantTests.test_dfa_state_budget_fails_explicitly) ... ok
+test_dfa_transition_matrix_is_complete_for_its_alphabet (test_engine.AutomatonInvariantTests.test_dfa_transition_matrix_is_complete_for_its_alphabet) ... ok
+test_initial_states_and_all_destinations_are_declared (test_engine.AutomatonInvariantTests.test_initial_states_and_all_destinations_are_declared) ... ok
+test_subset_acceptance_matches_nfa_final_membership (test_engine.AutomatonInvariantTests.test_subset_acceptance_matches_nfa_final_membership) ... ok
+test_trace_uses_actual_input_characters_and_starts_at_Q0 (test_engine.AutomatonInvariantTests.test_trace_uses_actual_input_characters_and_starts_at_Q0) ... ok
+test_dfa_equals_independent_nfa_simulation (test_engine.DifferentialTests.test_dfa_equals_independent_nfa_simulation) ... ok
+test_hyphen_at_class_edge_is_literal (test_engine.KnownLanguageTests.test_hyphen_at_class_edge_is_literal) ... ok
+test_independent_known_language_cases (test_engine.KnownLanguageTests.test_independent_known_language_cases) ... ok
+test_kleene_handles_long_input_without_recursion (test_engine.KnownLanguageTests.test_kleene_handles_long_input_without_recursion) ... ok
+test_malformed_patterns_raise_syntax_error (test_engine.KnownLanguageTests.test_malformed_patterns_raise_syntax_error) ... ok
+test_non_ascii_input_is_reported (test_engine.KnownLanguageTests.test_non_ascii_input_is_reported) ... ok
+test_only_specified_operators_have_special_meaning (test_engine.KnownLanguageTests.test_only_specified_operators_have_special_meaning) ... ok
+test_cli_json_output_and_return_codes (test_lexer.LexerTests.test_cli_json_output_and_return_codes) ... ok
+test_empty_or_only_skipped_input_returns_no_tokens (test_lexer.LexerTests.test_empty_or_only_skipped_input_returns_no_tokens) ... ok
+test_error_reports_exact_position (test_lexer.LexerTests.test_error_reports_exact_position) ... ok
+test_failed_longer_candidate_backtracks_to_last_acceptance (test_lexer.LexerTests.test_failed_longer_candidate_backtracks_to_last_acceptance) ... ok
+test_first_rule_controls_equal_length_tie (test_lexer.LexerTests.test_first_rule_controls_equal_length_tie) ... ok
+test_invalid_specifications_fail_explicitly (test_lexer.LexerTests.test_invalid_specifications_fail_explicitly) ... ok
+test_longest_match_wins_then_first_rule_breaks_tie (test_lexer.LexerTests.test_longest_match_wins_then_first_rule_breaks_tie) ... ok
+test_nullable_rules_are_forbidden (test_lexer.LexerTests.test_nullable_rules_are_forbidden) ... ok
+test_positions_count_skipped_characters_and_newlines (test_lexer.LexerTests.test_positions_count_skipped_characters_and_newlines) ... ok
+test_unmatched_character_and_non_ascii_are_errors (test_lexer.LexerTests.test_unmatched_character_and_non_ascii_are_errors) ... ok
+
+----------------------------------------------------------------------
+Ran 39 tests in 1.134s
+
+OK

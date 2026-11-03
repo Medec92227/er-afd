@@ -1,0 +1,26 @@
+[2J[HUbuntu: 01_entorno
+
++ cat /etc/os-release
++ head -n 6
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="26.04"
+VERSION="26.04.1 LTS (Resolute Raccoon)"
+VERSION_CODENAME=resolute
+ID=ubuntu
++ uname -m
+x86_64
++ getconf LONG_BIT
+64
++ id
+uid=1000(erafd) gid=1000(erafd) groups=1000(erafd),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),111(lpadmin),114(lxd),974(vboxsf)
++ python3 --version
+Python 3.14.4
++ make --version
++ head -n 1
+GNU Make 4.4.1
++ timedatectl show --property=Timezone --value
+America/Guatemala
++ set +x
+
+Captura terminada. Evidencia guardada.

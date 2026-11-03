@@ -1,0 +1,1106 @@
+{
+  "expression": "hola\\ mundo",
+  "universe": "ASCII 0..127",
+  "nfa": {
+    "states": [
+      "q0",
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q14",
+      "q15",
+      "q16",
+      "q17",
+      "q18",
+      "q19"
+    ],
+    "alphabet": [
+      "h",
+      "o",
+      "l",
+      "a",
+      "\\h20",
+      "m",
+      "u",
+      "n",
+      "d",
+      "\u03b5"
+    ],
+    "initial": "q0",
+    "finals": [
+      "q19"
+    ],
+    "symbol_sets": {
+      "h": [
+        "h"
+      ],
+      "o": [
+        "o"
+      ],
+      "l": [
+        "l"
+      ],
+      "a": [
+        "a"
+      ],
+      "\\h20": [
+        " "
+      ],
+      "m": [
+        "m"
+      ],
+      "u": [
+        "u"
+      ],
+      "n": [
+        "n"
+      ],
+      "d": [
+        "d"
+      ],
+      "\u03b5": []
+    },
+    "transitions": [
+      {
+        "source": "q0",
+        "symbol": "h",
+        "targets": [
+          "q1"
+        ]
+      },
+      {
+        "source": "q1",
+        "symbol": "\u03b5",
+        "targets": [
+          "q2"
+        ]
+      },
+      {
+        "source": "q2",
+        "symbol": "o",
+        "targets": [
+          "q3"
+        ]
+      },
+      {
+        "source": "q3",
+        "symbol": "\u03b5",
+        "targets": [
+          "q4"
+        ]
+      },
+      {
+        "source": "q4",
+        "symbol": "l",
+        "targets": [
+          "q5"
+        ]
+      },
+      {
+        "source": "q5",
+        "symbol": "\u03b5",
+        "targets": [
+          "q6"
+        ]
+      },
+      {
+        "source": "q6",
+        "symbol": "a",
+        "targets": [
+          "q7"
+        ]
+      },
+      {
+        "source": "q7",
+        "symbol": "\u03b5",
+        "targets": [
+          "q8"
+        ]
+      },
+      {
+        "source": "q8",
+        "symbol": "\\h20",
+        "targets": [
+          "q9"
+        ]
+      },
+      {
+        "source": "q9",
+        "symbol": "\u03b5",
+        "targets": [
+          "q10"
+        ]
+      },
+      {
+        "source": "q10",
+        "symbol": "m",
+        "targets": [
+          "q11"
+        ]
+      },
+      {
+        "source": "q11",
+        "symbol": "\u03b5",
+        "targets": [
+          "q12"
+        ]
+      },
+      {
+        "source": "q12",
+        "symbol": "u",
+        "targets": [
+          "q13"
+        ]
+      },
+      {
+        "source": "q13",
+        "symbol": "\u03b5",
+        "targets": [
+          "q14"
+        ]
+      },
+      {
+        "source": "q14",
+        "symbol": "n",
+        "targets": [
+          "q15"
+        ]
+      },
+      {
+        "source": "q15",
+        "symbol": "\u03b5",
+        "targets": [
+          "q16"
+        ]
+      },
+      {
+        "source": "q16",
+        "symbol": "d",
+        "targets": [
+          "q17"
+        ]
+      },
+      {
+        "source": "q17",
+        "symbol": "\u03b5",
+        "targets": [
+          "q18"
+        ]
+      },
+      {
+        "source": "q18",
+        "symbol": "o",
+        "targets": [
+          "q19"
+        ]
+      }
+    ]
+  },
+  "dfa": {
+    "states": [
+      "Q0",
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4",
+      "Q5",
+      "Q6",
+      "Q7",
+      "Q8",
+      "Q9",
+      "Q10",
+      "Q11"
+    ],
+    "source_alphabet": [
+      "h",
+      "o",
+      "l",
+      "a",
+      "\\h20",
+      "m",
+      "u",
+      "n",
+      "d"
+    ],
+    "alphabet": [
+      "h",
+      "o",
+      "l",
+      "a",
+      "\\h20",
+      "m",
+      "u",
+      "n",
+      "d",
+      "C9"
+    ],
+    "initial": "Q0",
+    "finals": [
+      "Q11"
+    ],
+    "dead_state": "Q2",
+    "partitions": {
+      "h": [
+        "h"
+      ],
+      "o": [
+        "o"
+      ],
+      "l": [
+        "l"
+      ],
+      "a": [
+        "a"
+      ],
+      "\\h20": [
+        " "
+      ],
+      "m": [
+        "m"
+      ],
+      "u": [
+        "u"
+      ],
+      "n": [
+        "n"
+      ],
+      "d": [
+        "d"
+      ],
+      "C9": [
+        "\u0000",
+        "\u0001",
+        "\u0002",
+        "\u0003",
+        "\u0004",
+        "\u0005",
+        "\u0006",
+        "\u0007",
+        "\b",
+        "\t",
+        "\n",
+        "\u000b",
+        "\f",
+        "\r",
+        "\u000e",
+        "\u000f",
+        "\u0010",
+        "\u0011",
+        "\u0012",
+        "\u0013",
+        "\u0014",
+        "\u0015",
+        "\u0016",
+        "\u0017",
+        "\u0018",
+        "\u0019",
+        "\u001a",
+        "\u001b",
+        "\u001c",
+        "\u001d",
+        "\u001e",
+        "\u001f",
+        "!",
+        "\"",
+        "#",
+        "$",
+        "%",
+        "&",
+        "'",
+        "(",
+        ")",
+        "*",
+        "+",
+        ",",
+        "-",
+        ".",
+        "/",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        ":",
+        ";",
+        "<",
+        "=",
+        ">",
+        "?",
+        "@",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "[",
+        "\\",
+        "]",
+        "^",
+        "_",
+        "`",
+        "b",
+        "c",
+        "e",
+        "f",
+        "g",
+        "i",
+        "j",
+        "k",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "{",
+        "|",
+        "}",
+        "~",
+        "\u007f"
+      ]
+    },
+    "subsets": {
+      "Q0": [
+        "q0"
+      ],
+      "Q1": [
+        "q1",
+        "q2"
+      ],
+      "Q2": [],
+      "Q3": [
+        "q3",
+        "q4"
+      ],
+      "Q4": [
+        "q5",
+        "q6"
+      ],
+      "Q5": [
+        "q7",
+        "q8"
+      ],
+      "Q6": [
+        "q9",
+        "q10"
+      ],
+      "Q7": [
+        "q11",
+        "q12"
+      ],
+      "Q8": [
+        "q13",
+        "q14"
+      ],
+      "Q9": [
+        "q15",
+        "q16"
+      ],
+      "Q10": [
+        "q17",
+        "q18"
+      ],
+      "Q11": [
+        "q19"
+      ]
+    },
+    "transitions": [
+      {
+        "source": "Q0",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "h",
+        "target": "Q1"
+      },
+      {
+        "source": "Q0",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q0",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q1",
+        "symbol": "o",
+        "target": "Q3"
+      },
+      {
+        "source": "Q1",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q2",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "l",
+        "target": "Q4"
+      },
+      {
+        "source": "Q3",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q3",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "a",
+        "target": "Q5"
+      },
+      {
+        "source": "Q4",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q4",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "\\h20",
+        "target": "Q6"
+      },
+      {
+        "source": "Q5",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q5",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "m",
+        "target": "Q7"
+      },
+      {
+        "source": "Q6",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q6",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q7",
+        "symbol": "u",
+        "target": "Q8"
+      },
+      {
+        "source": "Q8",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "n",
+        "target": "Q9"
+      },
+      {
+        "source": "Q8",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q8",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "d",
+        "target": "Q10"
+      },
+      {
+        "source": "Q9",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q9",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q10",
+        "symbol": "o",
+        "target": "Q11"
+      },
+      {
+        "source": "Q10",
+        "symbol": "u",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "C9",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "\\h20",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "a",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "d",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "h",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "l",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "m",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "n",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "o",
+        "target": "Q2"
+      },
+      {
+        "source": "Q11",
+        "symbol": "u",
+        "target": "Q2"
+      }
+    ]
+  },
+  "input": "hola mundo",
+  "accepted": true,
+  "exit_code": 1,
+  "trace": [
+    {
+      "source": "Q0",
+      "symbol": "h",
+      "target": "Q1"
+    },
+    {
+      "source": "Q1",
+      "symbol": "o",
+      "target": "Q3"
+    },
+    {
+      "source": "Q3",
+      "symbol": "l",
+      "target": "Q4"
+    },
+    {
+      "source": "Q4",
+      "symbol": "a",
+      "target": "Q5"
+    },
+    {
+      "source": "Q5",
+      "symbol": " ",
+      "target": "Q6"
+    },
+    {
+      "source": "Q6",
+      "symbol": "m",
+      "target": "Q7"
+    },
+    {
+      "source": "Q7",
+      "symbol": "u",
+      "target": "Q8"
+    },
+    {
+      "source": "Q8",
+      "symbol": "n",
+      "target": "Q9"
+    },
+    {
+      "source": "Q9",
+      "symbol": "d",
+      "target": "Q10"
+    },
+    {
+      "source": "Q10",
+      "symbol": "o",
+      "target": "Q11"
+    }
+  ],
+  "final_state": "Q11"
+}

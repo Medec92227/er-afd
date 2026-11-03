@@ -1,0 +1,30 @@
+[2J[HUbuntu: 06_limpieza_y_reconstruccion
+
++ make clean
+python3 tools/build.py clean
+Limpieza completada: zipapps, staging y cachés Python.
+Se conservan código, documentación, ejemplos y evidencias.
++ test -f er_afd/automata.py
++ test -f doc/Reporte_tecnico.pdf
++ test -f /home/erafd/er-afd/doc/evidencias/linux/20261102T180611Z/resultado.json
++ echo 'Fuentes, PDF y evidencias conservados'
+Fuentes, PDF y evidencias conservados
++ make build
+python3 tools/build.py build
+Python 3.14.4: configuración válida.
+Ejecución sin paquetes externos, sin red y sin privilegios root.
+Construido: dist/er-afd
+Construido: dist/er-lex
++ ./dist/er-afd 'a*b' aaab
++ estado=1
++ tail -n 5 /home/erafd/er-afd/doc/evidencias/linux/20261102T180611Z/capturas/06_reconstruccion_aceptada.log
+Q0|a|Q1
+Q1|a|Q1
+Q1|a|Q1
+Q1|b|Q2
+Cadena aceptada
++ printf 'Retorno tras reconstruir: %s (1 = aceptada)\n' 1
+Retorno tras reconstruir: 1 (1 = aceptada)
++ set +x
+
+Captura terminada. Evidencia guardada.

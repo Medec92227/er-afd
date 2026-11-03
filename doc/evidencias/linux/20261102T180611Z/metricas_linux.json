@@ -1,0 +1,76 @@
+{
+  "generated_at_utc": "2026-11-02T18:04:44.605737+00:00",
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43"
+  },
+  "unit_tests": {
+    "run": 39,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "known_language": {
+    "cases": 1499,
+    "correct": 1499,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "confusion_matrix": {
+      "tp": 710,
+      "tn": 789,
+      "fp": 0,
+      "fn": 0
+    },
+    "families": {
+      "literal": 2,
+      "fullmatch": 3,
+      "concatenacion": 3,
+      "precedencia": 6,
+      "parentesis": 3,
+      "kleene": 5,
+      "epsilon-ciclos": 7,
+      "epsilon": 7,
+      "conjunto": 2,
+      "rango": 3,
+      "negativo": 4,
+      "punto": 4,
+      "solapamiento": 9,
+      "escape-literal": 4,
+      "espacios": 3,
+      "hexadecimal": 4,
+      "digitos": 3,
+      "clases-especiales": 4,
+      "escape-en-conjunto": 6,
+      "rango-hexadecimal": 2,
+      "guion-fuera-conjunto": 1,
+      "duplicados": 2,
+      "numero": 2,
+      "identificador": 2,
+      "punto-ascii": 128,
+      "conjunto-ascii": 128,
+      "negativo-ascii": 128,
+      "rango-ascii": 128,
+      "digitos-ascii": 128,
+      "mayusculas-ascii": 128,
+      "minusculas-ascii": 128,
+      "letras-ascii": 128,
+      "solapamiento-ascii": 128,
+      "union-complemento-ascii": 128,
+      "literal-punto-ascii": 128
+    },
+    "failures": []
+  },
+  "differential_nfa_dfa": {
+    "patterns": 26,
+    "strings_per_pattern": 781,
+    "alphabet": "abc1 ",
+    "max_length": 4,
+    "comparisons": 20306,
+    "agreements": 20306,
+    "agreement_rate": 1.0,
+    "mismatches": []
+  },
+  "methodology": "Oráculos manuales independientes para casos positivos y negativos; 11 clases contrastadas con los 128 caracteres ASCII. Simulación AFND independiente frente al AFD sobre todos los textos de longitud 0..4 del alfabeto indicado. Las métricas describen esta muestra finita; no demuestran precisión universal ni estiman datos reales no muestreados."
+}

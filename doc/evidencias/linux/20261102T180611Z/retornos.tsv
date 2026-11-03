@@ -1,0 +1,16 @@
+01_config	0	0
+02_build	0	0
+03_tests	0	0
+04_make_run	0	0
+05_aceptada	1	1
+06_rechazada	0	0
+07_error_sintaxis	2	2
+08_vacia	1	1
+09_json	1	1
+10_dot	1	1
+11_archivo	1	1
+12_lexer	0	0
+13_metricas	0	0
+14_clean	0	0
+15_rebuild	0	0
+16_rebuild_aceptada	1	1

@@ -1,0 +1,39 @@
+name: Verificación Linux
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.12', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Configuración
+        run: make config
+      - name: Construcción
+        run: make build
+      - name: Pruebas
+        run: make test
+      - name: Zipapp y códigos de retorno
+        shell: python
+        run: |
+          import subprocess
+          import sys
+          for pattern, text, expected in [('a*b', 'aaab', 1), ('a*b', 'aaac', 0), ('[z-a]', 'a', 2)]:
+              result = subprocess.run([sys.executable, 'dist/er-afd', pattern, text], capture_output=True, text=True)
+              assert result.returncode == expected, (pattern, result.returncode, result.stdout, result.stderr)
+      - name: Make run acepta el retorno semántico
+        run: make run ER='(a|b)*abb' CADENA='aabb'
+      - name: Casos adicionales separados del histórico
+        run: python3 -m tests.additional_validation --output "$RUNNER_TEMP/pruebas_adicionales.json"
+      - name: Limpieza
+        run: make clean

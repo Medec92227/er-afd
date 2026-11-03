@@ -1,0 +1,24 @@
+[2J[HUbuntu: 02_suite_y_metricas
+
++ make test
++ estado=0
++ tail -n 8 /home/erafd/er-afd/doc/evidencias/linux/20261102T180611Z/capturas/02_suite_completa.log
+test_nullable_rules_are_forbidden (test_lexer.LexerTests.test_nullable_rules_are_forbidden) ... ok
+test_positions_count_skipped_characters_and_newlines (test_lexer.LexerTests.test_positions_count_skipped_characters_and_newlines) ... ok
+test_unmatched_character_and_non_ascii_are_errors (test_lexer.LexerTests.test_unmatched_character_and_non_ascii_are_errors) ... ok
+
+----------------------------------------------------------------------
+Ran 39 tests in 1.134s
+
+OK
++ printf 'Retorno de make test: %s\n' 0
+Retorno de make test: 0
++ python3 -c 'import json,os; from pathlib import Path; r=json.loads((Path(os.environ["EVIDENCE"])/"resultado.json").read_text()); print("Verificador completado:", r["completed"]); print("Comprobaciones:",len(r["checks"])); print("Pruebas unitarias:",r["unit_tests"]); print("Casos con oraculo:",r["known_language_cases"]); print("Comparaciones AFND/AFD:",r["differential_comparisons"])'
+Verificador completado: True
+Comprobaciones: 16
+Pruebas unitarias: {'run': 39, 'failures': 0, 'errors': 0, 'skipped': 0, 'passed': True}
+Casos con oraculo: 1499
+Comparaciones AFND/AFD: 20306
++ set +x
+
+Captura terminada. Evidencia guardada.
