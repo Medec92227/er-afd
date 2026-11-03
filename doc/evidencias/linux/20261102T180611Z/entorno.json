@@ -1,8 +1,0 @@
-{
-  "system": "Linux",
-  "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
-  "machine": "x86_64",
-  "python": "3.14.4",
-  "executable": "/usr/bin/python3",
-  "uid": 1000
-}

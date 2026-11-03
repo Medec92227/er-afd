@@ -3,9 +3,3 @@ __pycache__/
 .venv/
 build/
 dist/
-.coverage
-.pytest_cache/
-*.egg-info/
-# Manifiesto del ZIP completo; incluye los ejecutables de dist/.
-# No pertenece al repositorio de fuentes.
-/SHA256SUMS.json

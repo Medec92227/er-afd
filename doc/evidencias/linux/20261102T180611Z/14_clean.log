@@ -1,3 +1,0 @@
-python3 tools/build.py clean
-Limpieza completada: zipapps, staging y cachés Python.
-Se conservan código, documentación, ejemplos y evidencias.

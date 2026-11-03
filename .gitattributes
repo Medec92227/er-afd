@@ -3,13 +3,9 @@
 *.md text eol=lf
 *.json text eol=lf
 *.txt text eol=lf
-*.sh text eol=lf
 *.yml text eol=lf
 Makefile text eol=lf
 er-afd text eol=lf
 er-lex text eol=lf
 *.pdf binary
 *.png binary
-*.zip binary
-# Conservar exactamente los bytes de los registros e imágenes de evidencia.
-doc/evidencias/** -text

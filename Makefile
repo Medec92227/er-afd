@@ -3,7 +3,7 @@ ER ?= (a|b)*abb
 CADENA ?= aabb
 export ER CADENA
 
-.PHONY: config build run clean test
+.PHONY: config build run test metricas clean
 
 config:
 	$(PYTHON) tools/build.py config
@@ -16,6 +16,9 @@ run: build
 
 test:
 	$(PYTHON) -m unittest discover -s tests -v
+
+metricas:
+	$(PYTHON) -m tests.metricas --output doc/metricas.json
 
 clean:
 	$(PYTHON) tools/build.py clean

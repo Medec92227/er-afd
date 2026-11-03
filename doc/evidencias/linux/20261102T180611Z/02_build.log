@@ -1,5 +1,0 @@
-python3 tools/build.py build
-Python 3.14.4: configuración válida.
-Ejecución sin paquetes externos, sin red y sin privilegios root.
-Construido: dist/er-afd
-Construido: dist/er-lex
